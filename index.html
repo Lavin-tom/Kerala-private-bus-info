@@ -176,40 +176,36 @@ function search() {
     // Load JSON data from the file
     fetchJsonData('res/kottayam.json')
         .then(data => {
-            // Find the route index for the specified stations
-            const routeIndex = data.busSchedules.findIndex(schedule => schedule.route.includes(dropdown2Value));
-            const destinationIndex = data.busSchedules[routeIndex].route.findIndex(station => station.trim() === dropdown3Value.trim());
 
-            // Extract relevant schedule information for the specified route
+            const routeIndex = data.busSchedules[0].route.findIndex(station => station.trim() === dropdown2Value.trim());
+            const destinationIndex = data.busSchedules[0].route.findIndex(station => station.trim() === dropdown3Value.trim());
+
+
             const routeSchedule = [];
-            for (const tripSchedule of data.busSchedules[routeIndex].schedule) {
+            for (const tripSchedule of data.busSchedules[0].schedule) {
                 const stations = tripSchedule.stations;
-                const selectedStations = routeIndex < destinationIndex
-                    ? stations.slice(routeIndex, destinationIndex + 1)
-                    : stations.slice(destinationIndex, routeIndex + 1).reverse();
 
-                routeSchedule.push({
-                    trip: tripSchedule.trip,
-                    vehicleNumber: data.busSchedules[routeIndex]["Vehicle Number"],
-                    departureStation: selectedStations[0].station.trim(),
-                    arrivalStation: selectedStations[selectedStations.length - 1].station.trim(),
-                    departureTime: tripSchedule.stations[destinationIndex].departureTime
-                });
+
+                if (routeIndex >= 0 && destinationIndex >= 0) {
+                    const selectedStations = routeIndex < destinationIndex
+                        ? stations.slice(routeIndex, destinationIndex + 1)
+                        : stations.slice(destinationIndex, routeIndex + 1).reverse();
+
+                    routeSchedule.push({
+                        trip: tripSchedule.trip,
+                        vehicleNumber: data.busSchedules[0]["Vehicle Number"],
+                        departureStation: selectedStations[0].station.trim(),
+                        arrivalStation: selectedStations[selectedStations.length - 1].station.trim(),
+                        departureTime: selectedStations[0].departureTime,
+                    });
+                }
             }
-
-            // Get the current time
-            const currentTime = new Date();
-            const currentHours = currentTime.getHours();
-            const currentMinutes = currentTime.getMinutes();
-            const currentTimeString = `${currentHours}:${currentMinutes}`;
-
-            // Find the next bus based on the current time
-            const nextBus = routeSchedule.find(entry => entry.departureTime > currentTimeString);
 
             // Display results in the table
             displayResults(routeSchedule);
-			// Show the table
-            document.getElementById('resultTable').style.display = 'table';			
+
+            // Show the table
+            document.getElementById('resultTable').style.display = 'table';
         })
         .catch(error => console.error('Error fetching JSON data:', error));
 }
