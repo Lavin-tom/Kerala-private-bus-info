@@ -48,7 +48,7 @@
             }
         }
         #resultTable {
-            display: none; 
+            display: none; /* Initially hide the table */
         }		
     </style>
 </head>
@@ -177,39 +177,32 @@ function search() {
     // Load JSON data from the file
     fetchJsonData('res/kottayam.json')
         .then(data => {
-
+            // Extract relevant schedule information for the specified route
             const routeSchedule = [];
 
-
+            // Iterate over all bus schedules
             for (const busSchedule of data.busSchedules) {
                 const routeIndex = busSchedule.route.findIndex(station => station.trim() === dropdown2Value.trim());
                 const destinationIndex = busSchedule.route.findIndex(station => station.trim() === dropdown3Value.trim());
 
-
+                // Ensure that the routeIndex and destinationIndex are valid
                 if (routeIndex >= 0 && destinationIndex >= 0) {
-
+                    // Iterate over all trip schedules
                     for (const tripSchedule of busSchedule.schedule) {
                         const stations = tripSchedule.stations;
                         const selectedStations = routeIndex < destinationIndex
                             ? stations.slice(routeIndex, destinationIndex + 1)
                             : stations.slice(destinationIndex, routeIndex + 1).reverse();
 
-
+                        // Check if the selected stations match the specified range
                         if (selectedStations.length === Math.abs(routeIndex - destinationIndex) + 1) {
-                            // Get the departure time and convert it to a Date object
-                            const departureTime = new Date(tripSchedule.stations[0].departureTime);
-                            const currentTime = new Date();
-
-
-                            if (departureTime > currentTime) {
-                                routeSchedule.push({
-                                    trip: tripSchedule.trip,
-                                    vehicleNumber: busSchedule["Vehicle Number"],
-                                    departureStation: selectedStations[0].station.trim(),
-                                    arrivalStation: selectedStations[selectedStations.length - 1].station.trim(),
-                                    departureTime: selectedStations[0].departureTime,
-                                });
-                            }
+                            routeSchedule.push({
+                                trip: tripSchedule.trip,
+                                vehicleNumber: busSchedule["Vehicle Number"],
+                                departureStation: selectedStations[0].station.trim(),
+                                arrivalStation: selectedStations[selectedStations.length - 1].station.trim(),
+                                departureTime: selectedStations[0].departureTime,
+                            });
                         }
                     }
                 }
