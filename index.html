@@ -49,7 +49,36 @@
         }
         #resultTable {
             display: none; /* Initially hide the table */
-        }		
+        }
+		/* Style for the table */
+		#resultTable {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 20px;
+		}
+		
+		/* Style for table header */
+		#resultTable th {
+			background-color: #f2f2f2;
+		}
+		
+		/* Style for table cells */
+		#resultTable td, #resultTable th {
+			border: 1px solid #dddddd;
+			text-align: left;
+			padding: 8px;
+		}
+		
+		/* Style for alternating row colors */
+		#resultTable tr:nth-child(even) {
+			background-color: #f9f9f9;
+		}
+		
+		/* Style for the "No route found" message */
+		#noRouteMessage {
+			color: red;
+			margin-top: 20px;
+		}		
     </style>
 </head>
 
@@ -77,6 +106,7 @@
             <!-- Results will be appended here -->
         </tbody>
     </table>
+	    <div id="noRouteMessage"></div>
     </div>
 <script>
 			var options1 = ["THIRUVANANTHAPURAM","KOLLAM","PATHANAMTHITTA","ALAPUZHA","KOTTAYAM","IDUKKI","ERNAKULAM","TRISSUR","PALAKKAD","MALAPURAM","KOZHIKODE","WAYANAD","KANNUR","KASARAGOD"];
@@ -177,51 +207,56 @@ function search() {
     // Load JSON data from the file
     fetchJsonData('res/kottayam.json')
         .then(data => {
-            // Extract relevant schedule information for the specified route
+
             const routeSchedule = [];
 
-            // Iterate over all bus schedules
+
             for (const busSchedule of data.busSchedules) {
                 const routeIndex = busSchedule.route.findIndex(station => station.trim() === dropdown2Value.trim());
                 const destinationIndex = busSchedule.route.findIndex(station => station.trim() === dropdown3Value.trim());
 
-                // Ensure that the routeIndex and destinationIndex are valid
-                if (routeIndex >= 0 && destinationIndex >= 0) {
-                    // Iterate over all trip schedules
-                    for (const tripSchedule of busSchedule.schedule) {
-                        const stations = tripSchedule.stations;
-                        const selectedStations = routeIndex < destinationIndex
-                            ? stations.slice(routeIndex, destinationIndex + 1)
-                            : stations.slice(destinationIndex, routeIndex + 1).reverse();
 
-                        // Check if the selected stations match the specified range
-                        if (selectedStations.length === Math.abs(routeIndex - destinationIndex) + 1) {
-                            routeSchedule.push({
-                                trip: tripSchedule.trip,
-                                vehicleNumber: busSchedule["Vehicle Number"],
-                                departureStation: selectedStations[0].station.trim(),
-                                arrivalStation: selectedStations[selectedStations.length - 1].station.trim(),
-                                departureTime: selectedStations[0].departureTime,
-                            });
+                if (routeIndex >= 0 && destinationIndex >= 0) {
+
+                    if (routeIndex < destinationIndex) {
+
+                        for (const tripSchedule of busSchedule.schedule) {
+                            const stations = tripSchedule.stations;
+                            const selectedStations = stations.slice(routeIndex, destinationIndex + 1);
+
+
+                            if (selectedStations.length === Math.abs(routeIndex - destinationIndex) + 1) {
+                                routeSchedule.push({
+                                    trip: tripSchedule.trip,
+                                    vehicleNumber: busSchedule["Vehicle Number"],
+                                    departureStation: selectedStations[0].station.trim(),
+                                    arrivalStation: selectedStations[selectedStations.length - 1].station.trim(),
+                                    departureTime: selectedStations[0].departureTime,
+                                });
+                            }
                         }
                     }
                 }
             }
 
-            // Display results in the table
-            displayResults(routeSchedule);
 
-            // Show the table
-            document.getElementById('resultTable').style.display = 'table';
+            if (routeSchedule.length > 0) {
+                displayResults(routeSchedule);
+                document.getElementById('resultTable').style.display = 'table';
+            } else {
+                document.getElementById('resultTable').style.display = 'none';
+                alert('No route found for the specified stations.');
+            }
         })
         .catch(error => console.error('Error fetching JSON data:', error));
 }
+
 function displayResults(results) {
     const tableBody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
-    // Clear existing rows
+
     tableBody.innerHTML = '';
 
-    // Append new rows based on search results
+
     results.forEach(result => {
         const row = tableBody.insertRow();
         const cell1 = row.insertCell(0);
