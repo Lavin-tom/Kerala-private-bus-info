@@ -172,29 +172,29 @@ function search() {
     var dropdown2Value = document.getElementById("dropdown2").value;
     var dropdown3Value = document.getElementById("dropdown3").value;
 
-    console.log("Searching with values:", dropdown1Value, dropdown2Value);
+    console.log("Searching with values:", dropdown2Value, dropdown3Value);
 
     // Load JSON data from the file
     fetchJsonData('res/kottayam.json')
         .then(data => {
-         
+            // Extract relevant schedule information for the specified route
             const routeSchedule = [];
 
-            
+            // Iterate over all bus schedules
             for (const busSchedule of data.busSchedules) {
                 const routeIndex = busSchedule.route.findIndex(station => station.trim() === dropdown2Value.trim());
                 const destinationIndex = busSchedule.route.findIndex(station => station.trim() === dropdown3Value.trim());
 
-
+                // Ensure that the routeIndex and destinationIndex are valid
                 if (routeIndex >= 0 && destinationIndex >= 0) {
-
+                    // Iterate over all trip schedules
                     for (const tripSchedule of busSchedule.schedule) {
                         const stations = tripSchedule.stations;
                         const selectedStations = routeIndex < destinationIndex
                             ? stations.slice(routeIndex, destinationIndex + 1)
                             : stations.slice(destinationIndex, routeIndex + 1).reverse();
 
-
+                        // Check if the selected stations match the specified range
                         if (selectedStations.length === Math.abs(routeIndex - destinationIndex) + 1) {
                             routeSchedule.push({
                                 trip: tripSchedule.trip,
@@ -218,10 +218,10 @@ function search() {
 }
 function displayResults(results) {
     const tableBody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
-  
+    // Clear existing rows
     tableBody.innerHTML = '';
 
-   
+    // Append new rows based on search results
     results.forEach(result => {
         const row = tableBody.insertRow();
         const cell1 = row.insertCell(0);
