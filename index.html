@@ -47,6 +47,9 @@
                 width: 100%;
             }
         }
+        #resultTable {
+            display: none; /* Initially hide the table */
+        }		
     </style>
 </head>
 
@@ -59,6 +62,20 @@
         <select id="dropdown3"></select><br>
 
         <button type="button"onclick="search()">Search</button>
+		<table id="resultTable">
+        <thead>
+            <tr>
+                <th>Trip</th>
+                <th>Vehicle Number</th>
+                <th>Departure Station</th>
+                <th>Arrival Station</th>
+                <th>Departure Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Results will be appended here -->
+        </tbody>
+    </table>
     </div>
 <script>
 			var options1 = ["THIRUVANANTHAPURAM","KOLLAM","PATHANAMTHITTA","ALAPUZHA","KOTTAYAM","IDUKKI","ERNAKULAM","TRISSUR","PALAKKAD","MALAPURAM","KOZHIKODE","WAYANAD","KANNUR","KASARAGOD"];
@@ -150,25 +167,14 @@
         }
     }
 
-    function search() {
+function search() {
+    var dropdown2Value = document.getElementById("dropdown2").value;
+    var dropdown3Value = document.getElementById("dropdown3").value;
 
-		
-        var dropdown1Value = document.getElementById("dropdown1").value;
-        var dropdown2Value = document.getElementById("dropdown2").value;
-		var dropdown3Value = document.getElementById("dropdown3").value;
+    console.log("Searching with values:", dropdown2Value, dropdown3Value);
 
-        console.log("Searching with values:", dropdown2Value, dropdown3Value);
-
-        const district = dropdown1Value;
-        const sourceStation = dropdown2Value;
-        const destinationStation = dropdown3Value;
-
-
-        // Use the GitHub URL directly
-        const filePath = 'https://raw.githubusercontent.com/Lavin-tom/Kerala-private-bus-info/main/res/kottayam.json';
-
-        // Load JSON data from the file
-        fetchJsonData(filePath)
+    // Load JSON data from the file
+    fetchJsonData('res/kottayam.json')
         .then(data => {
             // Find the route index for the specified stations
             const routeIndex = data.busSchedules.findIndex(schedule => schedule.route.includes(dropdown2Value));
@@ -184,21 +190,51 @@
 
                 routeSchedule.push({
                     trip: tripSchedule.trip,
-                    stations: selectedStations,
+                    vehicleNumber: data.busSchedules[routeIndex]["Vehicle Number"],
+                    departureStation: selectedStations[0].station.trim(),
+                    arrivalStation: selectedStations[selectedStations.length - 1].station.trim(),
+                    departureTime: tripSchedule.stations[destinationIndex].departureTime
                 });
             }
 
-            // Print the extracted information to the console
-            for (const entry of routeSchedule) {
-                console.log(`Trip ${entry.trip} - Vehicle Number: ${data.busSchedules[routeIndex]["Vehicle Number"]}`);
-                for (const stationInfo of entry.stations) {
-                    console.log(`Station: ${stationInfo.station.trim()}, Arrival Time: ${stationInfo.arrivalTime}, Departure Time: ${stationInfo.departureTime}`);
-                }
-                console.log();
-            }
+            // Get the current time
+            const currentTime = new Date();
+            const currentHours = currentTime.getHours();
+            const currentMinutes = currentTime.getMinutes();
+            const currentTimeString = `${currentHours}:${currentMinutes}`;
+
+            // Find the next bus based on the current time
+            const nextBus = routeSchedule.find(entry => entry.departureTime > currentTimeString);
+
+            // Display results in the table
+            displayResults(routeSchedule);
+			// Show the table
+            document.getElementById('resultTable').style.display = 'table';			
         })
         .catch(error => console.error('Error fetching JSON data:', error));
-    }
+}
+
+function displayResults(results) {
+    const tableBody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
+    // Clear existing rows
+    tableBody.innerHTML = '';
+
+    // Append new rows based on search results
+    results.forEach(result => {
+        const row = tableBody.insertRow();
+        const cell1 = row.insertCell(0);
+        const cell2 = row.insertCell(1);
+        const cell3 = row.insertCell(2);
+        const cell4 = row.insertCell(3);
+        const cell5 = row.insertCell(4);
+
+        cell1.textContent = result.trip;
+        cell2.textContent = result.vehicleNumber;
+        cell3.textContent = result.departureStation;
+        cell4.textContent = result.arrivalStation;
+        cell5.textContent = result.departureTime;
+    });
+}
 </script>
 </body>
 
