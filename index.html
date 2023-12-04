@@ -4,36 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kerala Private Bus Timings</title>
-	<link rel="stylesheet" type="text/css" href="stylesheets/home.css">
-	<script src="scripts/serach_script.js"></script>
+    <link rel="stylesheet" type="text/css" href="stylesheets/home.css">
+    <script src="scripts/serach_script.js"></script>
+    <script>
+        var options1 = ["THIRUVANANTHAPURAM", "KOLLAM", "PATHANAMTHITTA", "ALAPUZHA", "KOTTAYAM", "IDUKKI", "ERNAKULAM", "TRISSUR", "PALAKKAD", "MALAPURAM", "KOZHIKODE", "WAYANAD", "KANNUR", "KASARAGOD"];
+
+        loadOptions("dropdown1", options1);
+		loadOptions("dropdown2", options2);
+    </script>
 </head>
 
 <body>
-
     <div class="container">
         <h1>Kerala Private Bus Timings</h1>
-		<select id="dropdown1"></select><br>
+        <select id="dropdown1"></select><br>
+        <button type="button" onclick="load()">Filter</button><br>
         <select id="dropdown2"></select><br>
         <select id="dropdown3"></select><br>
 
-        <button type="button"onclick="search()">Search</button>
-		<br>
-		<table id="resultTable">
-        <thead>
-            <tr>
-                <th>Vehicle Number</th>
-                <th>Departure Station</th>
-                <th>Arrival Station</th>
-                <th>Departure Time</th>
-            </tr>
-        </thead>
-        <tbody>
+        <button type="button" onclick="search()">Search</button><br>
 
-        </tbody>
-    </table>
-	    <div id="noRouteMessage"></div>
+        <table id="resultTable">
+            <thead>
+                <tr>
+                    <th>Vehicle Number</th>
+                    <th>Departure Station</th>
+                    <th>Arrival Station</th>
+                    <th>Departure Time</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+        <div id="noRouteMessage"></div>
     </div>
-<script></script>
+
+   <script src="scripts/serach_script.js"></script>
 </body>
 
 </html>
