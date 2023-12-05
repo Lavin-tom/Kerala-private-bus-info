@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kerala Private Bus Timings</title>
     <link rel="stylesheet" type="text/css" href="stylesheets/home.css">
-    <script src="scripts/serach_script.js"></script>
     <script>
         var options1 = ["THIRUVANANTHAPURAM", "KOLLAM", "PATHANAMTHITTA", "ALAPUZHA", "KOTTAYAM", "IDUKKI", "ERNAKULAM", "TRISSUR", "PALAKKAD", "MALAPURAM", "KOZHIKODE", "WAYANAD", "KANNUR", "KASARAGOD"];
 
         loadOptions("dropdown1", options1);
 		loadOptions("dropdown2", options2);
+		loadDropdown2(document.getElementById("dropdown1").value);
     </script>
 </head>
 
