@@ -7,10 +7,6 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/home.css">
     <script>
         var options1 = ["THIRUVANANTHAPURAM", "KOLLAM", "PATHANAMTHITTA", "ALAPUZHA", "KOTTAYAM", "IDUKKI", "ERNAKULAM", "TRISSUR", "PALAKKAD", "MALAPURAM", "KOZHIKODE", "WAYANAD", "KANNUR", "KASARAGOD"];
-
-        loadOptions("dropdown1", options1);
-		loadOptions("dropdown2", options2);
-		loadDropdown2(document.getElementById("dropdown1").value);
     </script>
 </head>
 
@@ -18,7 +14,7 @@
     <div class="container">
         <h1>Kerala Private Bus Timings</h1>
         <select id="dropdown1"></select><br>
-        <button type="button" onclick="load()">Filter</button><br>
+        <button type="button" id="filterButton">Filter</button><br>
         <select id="dropdown2"></select><br>
         <select id="dropdown3"></select><br>
 
