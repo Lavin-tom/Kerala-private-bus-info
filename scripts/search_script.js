@@ -1,5 +1,7 @@
 var options1 = ["THIRUVANANTHAPURAM","KOLLAM","PATHANAMTHITTA","ALAPUZHA","KOTTAYAM","IDUKKI","ERNAKULAM","TRISSUR","PALAKKAD","MALAPURAM","KOZHIKODE","WAYANAD","KANNUR","KASARAGOD"];
-var options2 = ['116 COLONY ', '14TH MILE ', '504 COLONY ', 'ADICHIPUZHA ', 'ADIVARAM ', 'ADUKKAM ', 'ALUMTHARA ',
+var option2 = {};
+var busStations = {
+    "KOTTAYAM": ['116 COLONY ', '14TH MILE ', '504 COLONY ', 'ADICHIPUZHA ', 'ADIVARAM ', 'ADUKKAM ', 'ALUMTHARA ',
 				'AMBALAKAVALA ', 'AMBAYATHODE ', 'AMBEDKAR COLONY ', 'AMBIKA MARKET ', 'ANAKAYAM ', 'ANAKKALLU ',
 				'ANAPPARA ', 'ANCHUKUDIYAR ', 'ANCHUKUDIYAR, BHARANANGANAM ', 'ANGELVALLEY ', 'ANICHUVADU ',
 				'ANJILITHANAM ', 'ANTHIYALAM ', 'ARUNAPURAM ', 'ATHIKKAYAM ', 'ATTIPEEDIKA ', 'ATTUVELIKADAVU ',
@@ -59,51 +61,42 @@ var options2 = ['116 COLONY ', '14TH MILE ', '504 COLONY ', 'ADICHIPUZHA ', 'ADI
 				'THUMARAMPARA ', 'TOLL ', 'ULLALA ', 'UMIKUPPA ', 'UMMIKUPPA ', 'UNIVERSITY ', 'UZHAVOOR ', 'VADAKKEMALA ', 'VADASSERIKARA ', 'VADAVATHOOR ',
 				'VADAVATHOOR EAST ', 'VADAVATHOOR ESI ', 'VADAVATHOOR KADAVU ', 'VAIKKOM ', 'VAIKOM ', 'VAIPPUR ', 'VAKKAD ', 'VALLIYAMKAVU ', 'VATTAKKAVU ',
 				'VATTUPURA ', 'VAYALA ', 'VAZHAMANA ', 'VECHOOCHIRA ', 'VECHOOR ', 'VELLANY ', 'VELLAVOOR ', 'VELLOOPARAMBU ', 'VELLOOR ', 'VELLOOR H P C ',
-				'VELLUTHURUTHI TEMPLE ', 'VELOOR ', 'VENGOTTA ', 'VENKOTTA ', 'VETTIMUKAL ', 'VYTTILA HUB ', 'VYTTILA JN. '];
+				'VELLUTHURUTHI TEMPLE ', 'VELOOR ', 'VENGOTTA ', 'VENKOTTA ', 'VETTIMUKAL ', 'VYTTILA HUB ', 'VYTTILA JN. '],
+    "KOLLAM": ["StationX", "StationY", "StationZ"],
+};
+	function loadOptions(selectId, options) {
+    var select = document.getElementById(selectId);
+    select.innerHTML = '';
+
+    options.forEach(function (option) {
+        var optionElement = document.createElement("option");
+        optionElement.value = option;
+        optionElement.text = option;
+        select.add(optionElement);
+    });
+	}
+	loadOptions("dropdown1", options1);
 	
-	loadOptions("dropdown1",options1);
-	loadOptions("dropdown2", options2);
-	loadOptions("dropdown3", options2);    
+	document.getElementById("filterButton").addEventListener("click", function () {
+		var selectedValue = document.getElementById("dropdown1").value;
+		loadDropdown2(selectedValue);
+	});
+	function loadDropdown2(selectedValue) {
+		var options2Array = busStations[selectedValue] || []; 
+		loadOptions("dropdown2", options2Array);
+		loadOptions("dropdown3",options2Array);
+	}
+		async function fetchJsonData(file) {
+			try {
+				const response = await fetch(file);
+				const jsonData = await response.json();
+				return jsonData;
+			} catch (error) {
+				console.error('Error fetching JSON data:', error);
+				throw error;
+			}
+		}
 	
-        function loadOptions(selectId, options) {
-            var select = document.getElementById(selectId);
-            select.innerHTML = '';
-
-            options.forEach(function (option) {
-                var optionElement = document.createElement("option");
-                optionElement.value = option;
-                optionElement.text = option;
-                select.add(optionElement);
-            });
-        }
-
-        function loadDropdown2(selectedValue) {
-
-            var options2;
-            switch (selectedValue) {
-                case "THIRUVANANTHAPURAM":
-                    options2 = ["Destination1_A", "Destination1_B", "Destination1_C"];
-                    break;
-                case "KOLLAM":
-                    options2 = ["Destination2_A", "Destination2_B", "Destination2_C"];
-                    break;
-
-                default:
-                    options2 = []; 
-            }
-            loadOptions("dropdown2", options2);
-        }
-    async function fetchJsonData(file) {
-        try {
-            const response = await fetch(file);
-            const jsonData = await response.json();
-            return jsonData;
-        } catch (error) {
-            console.error('Error fetching JSON data:', error);
-            throw error;
-        }
-    }
-
 function search() {
     var dropdown2Value = document.getElementById("dropdown2").value;
     var dropdown3Value = document.getElementById("dropdown3").value;
@@ -113,24 +106,24 @@ function search() {
     // Load JSON data from the file
     fetchJsonData('res/kottayam.json')
         .then(data => {
-            // Extract relevant schedule information for the specified route
+
             const routeSchedule = [];
 
-            // Iterate over all bus schedules
+
             for (const busSchedule of data.busSchedules) {
                 const routeIndex = busSchedule.route.findIndex(station => station.trim() === dropdown2Value.trim());
                 const destinationIndex = busSchedule.route.findIndex(station => station.trim() === dropdown3Value.trim());
 
-                // Ensure that the routeIndex and destinationIndex are valid
+
                 if (routeIndex >= 0 && destinationIndex >= 0) {
-                    // Iterate over all trip schedules
+
                     for (const tripSchedule of busSchedule.schedule) {
                         const stations = tripSchedule.stations;
                         const selectedStations = routeIndex < destinationIndex
                             ? stations.slice(routeIndex, destinationIndex + 1)
                             : stations.slice(destinationIndex, routeIndex + 1).reverse();
 
-                        // Check if the selected stations match the specified range
+
                         if (selectedStations.length === Math.abs(routeIndex - destinationIndex) + 1 &&
                             selectedStations[0].station.trim() === dropdown2Value.trim() &&
                             selectedStations[selectedStations.length - 1].station.trim() === dropdown3Value.trim()) {
@@ -145,10 +138,10 @@ function search() {
                 }
             }
 
-            // Display results in the table
+
             displayResults(routeSchedule);
 
-            // Show the table or the "No route found" message
+
             const resultTable = document.getElementById('resultTable');
             const noRouteMessage = document.getElementById('noRouteMessage');
             if (routeSchedule.length > 0) {
@@ -165,10 +158,10 @@ function search() {
 
 function displayResults(results) {
     const tableBody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
-    // Clear existing rows
+
     tableBody.innerHTML = '';
 
-    // Append new rows based on search results
+
     results.forEach(result => {
         const row = tableBody.insertRow();
         const cell1 = row.insertCell(0);
