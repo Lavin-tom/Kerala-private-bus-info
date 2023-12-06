@@ -82,7 +82,7 @@ var busStations = {
 		loadDropdown2(selectedValue);
 	});
 	function loadDropdown2(selectedValue) {
-		var options2Array = busStations[selectedValue] || [];
+		var options2Array = busStations[selectedValue] || []; 
 		loadOptions("dropdown2", options2Array);
 		loadOptions("dropdown3",options2Array);
 	}
@@ -108,36 +108,27 @@ function search() {
     var jsonFilePath = 'res/' + dropdown1Value.toLowerCase() + '.json';
 
 
-	fetchJsonData(jsonFilePath)
-		.then(data => {
+fetchJsonData(jsonFilePath)
+    .then(data => {
         const allTrips = [];
 
 
-        for (const busSchedule of data) {
-            for (const tripSchedule of busSchedule.schedule) {
-                    const stations = tripSchedule.stations;
-                    const routeIndex = stations.findIndex(station => station.station.trim() === dropdown2Value.trim());
-                    const destinationIndex = stations.findIndex(station => station.station.trim() === dropdown3Value.trim());
+        for (const busSchedule of data.schedule) {
+            for (const tripSchedule of busSchedule.stations) {
 
-                    if (routeIndex >= 0 && destinationIndex >= 0) {
-                        const selectedStations = routeIndex < destinationIndex
-                            ? stations.slice(routeIndex, destinationIndex + 1)
-                            : stations.slice(destinationIndex, routeIndex + 1).reverse();
+                const { station, departureTime } = tripSchedule;
 
-                        if (selectedStations.length === Math.abs(routeIndex - destinationIndex) + 1 &&
-                            selectedStations[0].station.trim() === dropdown2Value.trim() &&
-                            selectedStations[selectedStations.length - 1].station.trim() === dropdown3Value.trim()) {
-                            allTrips.push({
-                                vehicleNumber: busSchedule["Vehicle Number"],
-                                tripNumber: tripSchedule.trip,
-                                departureStation: selectedStations[0].station.trim(),
-                                arrivalStation: selectedStations[selectedStations.length - 1].station.trim(),
-                                departureTime: selectedStations[0].departureTime,
-                            });
-                        }
-                    }
+
+                if (station.trim() === dropdown2Value.trim() || station.trim() === dropdown3Value.trim()) {
+                    allTrips.push({
+                        vehicleNumber: data["Vehicle Number"],
+                        tripNumber: busSchedule.trip,
+                        departureStation: station.trim(),
+                        departureTime: departureTime,
+                    });
                 }
             }
+        }
 
 
         allTrips.sort((a, b) => {
@@ -158,7 +149,8 @@ function search() {
             noRouteMessage.style.display = 'block';
         }
     })
-        .catch(error => console.error('Error fetching JSON data:', error));
+    .catch(error => console.error('Error fetching JSON data:', error));
+
 }
 
 
