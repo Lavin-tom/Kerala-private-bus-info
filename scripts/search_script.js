@@ -104,59 +104,61 @@ function search() {
 
     console.log("Searching with values:", dropdown1Value, dropdown2Value, dropdown3Value);
 
-
+  
     var jsonFilePath = 'res/' + dropdown1Value.toLowerCase() + '.json';
 
 
-fetchJsonData(jsonFilePath)
-    .then(data => {
-        const allTrips = [];
+    fetchJsonData(jsonFilePath)
+        .then(data => {
+            const allTrips = [];
+            
 
+            if (data.schedule && Array.isArray(data.schedule)) {
+                for (const busSchedule of data.schedule) {
+                    for (const tripSchedule of busSchedule.stations) {
+                        const { station, departureTime } = tripSchedule;
 
-        for (const busSchedule of data.schedule) {
-            for (const tripSchedule of busSchedule.stations) {
-
-                const { station, departureTime } = tripSchedule;
-
-
-                if (station.trim() === dropdown2Value.trim() || station.trim() === dropdown3Value.trim()) {
-                    allTrips.push({
-                        vehicleNumber: data["Vehicle Number"],
-                        tripNumber: busSchedule.trip,
-                        departureStation: station.trim(),
-                        departureTime: departureTime,
-                    });
+                        if (station.trim() === dropdown2Value.trim() || station.trim() === dropdown3Value.trim()) {
+                            allTrips.push({
+                                vehicleNumber: data["Vehicle Number"],
+                                tripNumber: busSchedule.trip,
+                                departureStation: station.trim(),
+                                departureTime: departureTime,
+                            });
+                        }
+                    }
                 }
+
+                
+                allTrips.sort((a, b) => {
+                    const timeA = new Date(a.departureTime).getTime();
+                    const timeB = new Date(b.departureTime).getTime();
+                    return timeA - timeB;
+                });
+
+                displayResults(allTrips);
+
+                const resultTable = document.getElementById('resultTable');
+                const noRouteMessage = document.getElementById('noRouteMessage');
+                if (allTrips.length > 0) {
+                    resultTable.style.display = 'table';
+                    noRouteMessage.style.display = 'none';
+                } else {
+                    resultTable.style.display = 'none';
+                    noRouteMessage.style.display = 'block';
+                }
+            } else {
+                console.error('Invalid data structure. Expected "schedule" property to be an array.');
             }
-        }
-
-
-        allTrips.sort((a, b) => {
-            const timeA = new Date(a.departureTime).getTime();
-            const timeB = new Date(b.departureTime).getTime();
-            return timeA - timeB;
-        });
-
-        displayResults(allTrips);
-
-        const resultTable = document.getElementById('resultTable');
-        const noRouteMessage = document.getElementById('noRouteMessage');
-        if (allTrips.length > 0) {
-            resultTable.style.display = 'table';
-            noRouteMessage.style.display = 'none';
-        } else {
-            resultTable.style.display = 'none';
-            noRouteMessage.style.display = 'block';
-        }
-    })
-    .catch(error => console.error('Error fetching JSON data:', error));
-
+        })
+        .catch(error => console.error('Error fetching JSON data:', error));
 }
+
 
 
 function displayResults(results) {
     const tableBody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
-
+  
     tableBody.innerHTML = '';
 
 
