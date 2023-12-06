@@ -108,12 +108,13 @@ function search() {
     var jsonFilePath = 'res/' + dropdown1Value.toLowerCase() + '.json';
 
 
-    fetchJsonData(jsonFilePath)
-        .then(data => {
-            const allTrips = [];
+	fetchJsonData(jsonFilePath)
+		.then(data => {
+        const allTrips = [];
 
-            for (const busSchedule of data.schedule) {
-                for (const tripSchedule of busSchedule.schedule) {
+
+        for (const busSchedule of data) {
+            for (const tripSchedule of busSchedule.schedule) {
                     const stations = tripSchedule.stations;
                     const routeIndex = stations.findIndex(station => station.station.trim() === dropdown2Value.trim());
                     const destinationIndex = stations.findIndex(station => station.station.trim() === dropdown3Value.trim());
@@ -139,24 +140,24 @@ function search() {
             }
 
 
-            allTrips.sort((a, b) => {
-                const timeA = new Date(a.departureTime).getTime();
-                const timeB = new Date(b.departureTime).getTime();
-                return timeA - timeB;
-            });
+        allTrips.sort((a, b) => {
+            const timeA = new Date(a.departureTime).getTime();
+            const timeB = new Date(b.departureTime).getTime();
+            return timeA - timeB;
+        });
 
-            displayResults(allTrips);
+        displayResults(allTrips);
 
-            const resultTable = document.getElementById('resultTable');
-            const noRouteMessage = document.getElementById('noRouteMessage');
-            if (allTrips.length > 0) {
-                resultTable.style.display = 'table';
-                noRouteMessage.style.display = 'none';
-            } else {
-                resultTable.style.display = 'none';
-                noRouteMessage.style.display = 'block';
-            }
-        })
+        const resultTable = document.getElementById('resultTable');
+        const noRouteMessage = document.getElementById('noRouteMessage');
+        if (allTrips.length > 0) {
+            resultTable.style.display = 'table';
+            noRouteMessage.style.display = 'none';
+        } else {
+            resultTable.style.display = 'none';
+            noRouteMessage.style.display = 'block';
+        }
+    })
         .catch(error => console.error('Error fetching JSON data:', error));
 }
 
