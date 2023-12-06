@@ -1,74 +1,78 @@
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-        }
 
-        .container {
-            text-align: center;
-        }
+body, h1, h2, h3, p, ul, li, button {
+    margin: 0;
+    padding: 0;
+}
 
-        h1 {
-            color: #333;
-        }
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+}
 
-        select {
-            padding: 10px;
-            margin: 10px 0;
-            width: 200px;
-            box-sizing: border-box;
-        }
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
-        button {
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            width: 220px;
-            box-sizing: border-box;
-        }
+h1 {
+    text-align: center;
+    color: #007BFF;
+}
 
-        @media (max-width: 768px) {
-            select,
-            button {
-                width: 100%;
-            }
-        }
-        #resultTable {
-            display: none; /* Initially hide the table */
-        }
-		/* Style for the table */
-		#resultTable {
-			width: 100%;
-			border-collapse: collapse;
-			margin-top: 20px;
-		}
-		
-		/* Style for table header */
-		#resultTable th {
-			background-color: #f2f2f2;
-		}
-		
-		/* Style for table cells */
-		#resultTable td, #resultTable th {
-			border: 1px solid #dddddd;
-			text-align: left;
-			padding: 8px;
-		}
-		
-		/* Style for alternating row colors */
-		#resultTable tr:nth-child(even) {
-			background-color: #f9f9f9;
-		}
-		
-		/* Style for the "No route found" message */
-		#noRouteMessage {
-			color: red;
-			margin-top: 20px;
-		}
+select, button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #007BFF;
+    color: #fff;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #007BFF;
+    color: #fff;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+th {
+    font-weight: bold;
+}
+
+#noRouteMessage {
+    margin-top: 20px;
+    text-align: center;
+    color: #FF4500;
+}
+
+/* Responsive styles */
+@media only screen and (max-width: 600px) {
+    select, button {
+        width: 100%;
+    }
+}
