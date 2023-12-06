@@ -1,4 +1,4 @@
-var options1 = ["THIRUVANANTHAPURAM","KOLLAM","PATHANAMTHITTA","ALAPUZHA","KOTTAYAM","IDUKKI","ERNAKULAM","TRISSUR","PALAKKAD","MALAPURAM","KOZHIKODE","WAYANAD","KANNUR","KASARAGOD"];
+var options1 = ["Choose District","THIRUVANANTHAPURAM","KOLLAM","PATHANAMTHITTA","ALAPUZHA","KOTTAYAM","IDUKKI","ERNAKULAM","TRISSUR","PALAKKAD","MALAPURAM","KOZHIKODE","WAYANAD","KANNUR","KASARAGOD"];
 var option2 = {};
 var busStations = {
     "KOTTAYAM": ['116 COLONY ', '14TH MILE ', '504 COLONY ', 'ADICHIPUZHA ', 'ADIVARAM ', 'ADUKKAM ', 'ALUMTHARA ',
@@ -82,7 +82,7 @@ var busStations = {
 		loadDropdown2(selectedValue);
 	});
 	function loadDropdown2(selectedValue) {
-		var options2Array = busStations[selectedValue] || []; 
+		var options2Array = busStations[selectedValue] || [];
 		loadOptions("dropdown2", options2Array);
 		loadOptions("dropdown3",options2Array);
 	}
@@ -98,32 +98,34 @@ var busStations = {
 		}
 	
 function search() {
+	var dropdown1Value = document.getElementById("dropdown1").value;
     var dropdown2Value = document.getElementById("dropdown2").value;
     var dropdown3Value = document.getElementById("dropdown3").value;
 
     console.log("Searching with values:", dropdown2Value, dropdown3Value);
 
-    // Load JSON data from the file
-    fetchJsonData('res/kottayam.json')
+    
+	var jsonFilePath = 'res/' + dropdown1Value.toLowerCase() + '.json';
+    fetchJsonData(jsonFilePath)
         .then(data => {
-
+            
             const routeSchedule = [];
 
-
+            
             for (const busSchedule of data.busSchedules) {
                 const routeIndex = busSchedule.route.findIndex(station => station.trim() === dropdown2Value.trim());
                 const destinationIndex = busSchedule.route.findIndex(station => station.trim() === dropdown3Value.trim());
 
-
+                
                 if (routeIndex >= 0 && destinationIndex >= 0) {
-
+                    
                     for (const tripSchedule of busSchedule.schedule) {
                         const stations = tripSchedule.stations;
                         const selectedStations = routeIndex < destinationIndex
                             ? stations.slice(routeIndex, destinationIndex + 1)
                             : stations.slice(destinationIndex, routeIndex + 1).reverse();
 
-
+                        
                         if (selectedStations.length === Math.abs(routeIndex - destinationIndex) + 1 &&
                             selectedStations[0].station.trim() === dropdown2Value.trim() &&
                             selectedStations[selectedStations.length - 1].station.trim() === dropdown3Value.trim()) {
@@ -138,9 +140,13 @@ function search() {
                 }
             }
 
+             routeSchedule.sort((a, b) => {
+                const timeA = new Date(a.departureTime).getTime();
+                const timeB = new Date(b.departureTime).getTime();
+                return timeA - timeB;
+            });
 
             displayResults(routeSchedule);
-
 
             const resultTable = document.getElementById('resultTable');
             const noRouteMessage = document.getElementById('noRouteMessage');
@@ -158,10 +164,10 @@ function search() {
 
 function displayResults(results) {
     const tableBody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
-
+   
     tableBody.innerHTML = '';
 
-
+   
     results.forEach(result => {
         const row = tableBody.insertRow();
         const cell1 = row.insertCell(0);
