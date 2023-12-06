@@ -98,39 +98,37 @@ var busStations = {
 		}
 	
 function search() {
-	var dropdown1Value = document.getElementById("dropdown1").value;
+    var dropdown1Value = document.getElementById("dropdown1").value;
     var dropdown2Value = document.getElementById("dropdown2").value;
     var dropdown3Value = document.getElementById("dropdown3").value;
 
-    console.log("Searching with values:", dropdown2Value, dropdown3Value);
+    console.log("Searching with values:", dropdown1Value, dropdown2Value, dropdown3Value);
 
-    
-	var jsonFilePath = 'res/' + dropdown1Value.toLowerCase() + '.json';
+
+    var jsonFilePath = 'res/' + dropdown1Value.toLowerCase() + '.json';
+
+
     fetchJsonData(jsonFilePath)
         .then(data => {
-            
-            const routeSchedule = [];
+            const allTrips = [];
 
-            
-            for (const busSchedule of data.busSchedules) {
-                const routeIndex = busSchedule.route.findIndex(station => station.trim() === dropdown2Value.trim());
-                const destinationIndex = busSchedule.route.findIndex(station => station.trim() === dropdown3Value.trim());
+            for (const busSchedule of data.schedule) {
+                for (const tripSchedule of busSchedule.schedule) {
+                    const stations = tripSchedule.stations;
+                    const routeIndex = stations.findIndex(station => station.station.trim() === dropdown2Value.trim());
+                    const destinationIndex = stations.findIndex(station => station.station.trim() === dropdown3Value.trim());
 
-                
-                if (routeIndex >= 0 && destinationIndex >= 0) {
-                    
-                    for (const tripSchedule of busSchedule.schedule) {
-                        const stations = tripSchedule.stations;
+                    if (routeIndex >= 0 && destinationIndex >= 0) {
                         const selectedStations = routeIndex < destinationIndex
                             ? stations.slice(routeIndex, destinationIndex + 1)
                             : stations.slice(destinationIndex, routeIndex + 1).reverse();
 
-                        
                         if (selectedStations.length === Math.abs(routeIndex - destinationIndex) + 1 &&
                             selectedStations[0].station.trim() === dropdown2Value.trim() &&
                             selectedStations[selectedStations.length - 1].station.trim() === dropdown3Value.trim()) {
-                            routeSchedule.push({
+                            allTrips.push({
                                 vehicleNumber: busSchedule["Vehicle Number"],
+                                tripNumber: tripSchedule.trip,
                                 departureStation: selectedStations[0].station.trim(),
                                 arrivalStation: selectedStations[selectedStations.length - 1].station.trim(),
                                 departureTime: selectedStations[0].departureTime,
@@ -140,17 +138,18 @@ function search() {
                 }
             }
 
-             routeSchedule.sort((a, b) => {
+
+            allTrips.sort((a, b) => {
                 const timeA = new Date(a.departureTime).getTime();
                 const timeB = new Date(b.departureTime).getTime();
                 return timeA - timeB;
             });
 
-            displayResults(routeSchedule);
+            displayResults(allTrips);
 
             const resultTable = document.getElementById('resultTable');
             const noRouteMessage = document.getElementById('noRouteMessage');
-            if (routeSchedule.length > 0) {
+            if (allTrips.length > 0) {
                 resultTable.style.display = 'table';
                 noRouteMessage.style.display = 'none';
             } else {
@@ -164,10 +163,10 @@ function search() {
 
 function displayResults(results) {
     const tableBody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
-   
+
     tableBody.innerHTML = '';
 
-   
+
     results.forEach(result => {
         const row = tableBody.insertRow();
         const cell1 = row.insertCell(0);
