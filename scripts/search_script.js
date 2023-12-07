@@ -111,31 +111,35 @@ async function search() {
 
         const allTrips = [];
 
-        if (jsonData.busSchedules) {
-            jsonData.busSchedules.forEach(schedule => {
-                const routeIndex = schedule.route.indexOf(dropdown2Value);
-                const destinationIndex = schedule.route.indexOf(dropdown3Value);
+		if (jsonData.busSchedules) {
+			jsonData.busSchedules.forEach(schedule => {
+				const routeIndex = schedule.route.indexOf(dropdown2Value);
+				const destinationIndex = schedule.route.indexOf(dropdown3Value);
+		
+				if (routeIndex >= 0 && destinationIndex >= 0 && routeIndex < destinationIndex) {
+					const selectedStations = schedule.route.slice(routeIndex, destinationIndex + 1);
+		
+					const tripData = schedule.schedule.map(trip => {
 
-                if (routeIndex >= 0 && destinationIndex >= 0 && routeIndex < destinationIndex) {
-                    const selectedStations = schedule.route.slice(routeIndex, destinationIndex + 1);
-
-                    const tripData = schedule.schedule.map(trip => {
-                        const stations = trip.stations.filter(station => selectedStations.includes(station.station.trim()));
-                        return {
-                            vehicleNumber: schedule["Vehicle Number"],
-                            tripNumber: trip.trip,
-                            departureStation: stations[0].station.trim(),
-                            arrivalStation: stations[stations.length - 1].station.trim(),
-                            departureTime: stations[0].departureTime,
-                        };
-                    });
-
-                    allTrips.push(...tripData);
-                }
-            });
-        } else {
-            console.error('Invalid data structure. Expected "busSchedules" property to exist.');
-        }
+						console.log('schedule:', schedule);
+						console.log('trip:', trip);
+		
+						const stations = trip.stations.filter(station => selectedStations.includes(station.station.trim()));
+						return {
+							vehicleNumber: schedule["Vehicle Number"],
+							tripNumber: trip.trip,
+							departureStation: stations[0].station.trim(),
+							arrivalStation: stations[stations.length - 1].station.trim(),
+							departureTime: stations[0].departureTime,
+						};
+					});
+		
+					allTrips.push(...tripData);
+				}
+			});
+		} else {
+			console.error('Invalid data structure. Expected "busSchedules" property to exist.');
+		}
 
         allTrips.sort((a, b) => {
             const timeA = new Date(a.departureTime).getTime();
