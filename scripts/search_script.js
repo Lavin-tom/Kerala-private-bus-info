@@ -144,17 +144,6 @@ async function search() {
 							departureTime: filteredStations[0].departureTime,
 						};
 					});
-		
-					// Filter out trips with null values (errors)
-					allTrips.push(...tripData.filter(trip => trip !== null));
-					const tableHead = document.querySelector('thead');
-					if (allTrips.length > 0) {
-
-						tableHead.style.display = 'table-header-group';
-					} else {
-
-						tableHead.style.display = 'none';
-					}
 				}
 			});
 		} else {
