@@ -111,51 +111,55 @@ async function search() {
 
         const allTrips = [];
 
-		if (jsonData.busSchedules) {
-			jsonData.busSchedules.forEach(schedule => {
-				const routeIndex = schedule.route.indexOf(dropdown2Value);
-				const destinationIndex = schedule.route.indexOf(dropdown3Value);
-		
-				if (routeIndex >= 0 && destinationIndex >= 0 && routeIndex < destinationIndex) {
-					const selectedStations = schedule.route.slice(routeIndex, destinationIndex + 1);
-		
-					const tripData = schedule.schedule.map(trip => {
-						// Add console.log statements to debug
-						console.log('schedule:', schedule);
-						console.log('trip:', trip);
-		
-						const stations = trip.stations;
-						if (!stations) {
-							console.error('Stations array is missing in trip:', trip);
-							return null; // Skip this trip if stations array is missing
-						}
-		
-						const filteredStations = stations.filter(station => selectedStations.includes(station.station.trim()));
-						if (filteredStations.length === 0) {
-							console.error('No matching stations found for trip:', trip);
-							return null; // Skip this trip if no matching stations are found
-						}
-		
-						return {
-							vehicleNumber: schedule["Vehicle Number"],
-							tripNumber: trip.trip,
-							departureStation: filteredStations[0].station.trim(),
-							arrivalStation: filteredStations[filteredStations.length - 1].station.trim(),
-							departureTime: filteredStations[0].departureTime,
-						};
-					});
-				}
-			});
-		} else {
-			console.error('Invalid data structure. Expected "busSchedules" property to exist.');
-		}
-	}
+        if (jsonData.busSchedules) {
+            jsonData.busSchedules.forEach(schedule => {
+                const routeIndex = schedule.route.indexOf(dropdown2Value);
+                const destinationIndex = schedule.route.indexOf(dropdown3Value);
+
+                if (routeIndex >= 0 && destinationIndex >= 0 && routeIndex < destinationIndex) {
+                    const selectedStations = schedule.route.slice(routeIndex, destinationIndex + 1);
+
+                    const tripData = schedule.schedule.map(trip => {
+                        const stations = trip.stations;
+                        if (!stations) {
+                            console.error('Stations array is missing in trip:', trip);
+                            return null;
+                        }
+
+                        const filteredStations = stations.filter(station => selectedStations.includes(station.station.trim()));
+                        if (filteredStations.length === 0) {
+                            console.error('No matching stations found for trip:', trip);
+                            return null;
+                        }
+
+                        return {
+                            vehicleNumber: schedule["Vehicle Number"],
+                            tripNumber: trip.trip,
+                            departureStation: filteredStations[0].station.trim(),
+                            arrivalStation: filteredStations[filteredStations.length - 1].station.trim(),
+                            departureTime: filteredStations[0].departureTime,
+                        };
+                    });
+
+
+                    allTrips.push(...tripData.filter(trip => trip !== null));
+                }
+            });
+        } else {
+            console.error('Invalid data structure. Expected "busSchedules" property to exist.');
+        }
+
+
+        displayResults(allTrips);
+    } catch (error) {
+        console.error('Error fetching or parsing JSON data:', error);
+    }
+}
 
 function displayResults(results) {
     const tableBody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
 
     tableBody.innerHTML = '';
-
 
     results.forEach(result => {
         const row = tableBody.insertRow();
