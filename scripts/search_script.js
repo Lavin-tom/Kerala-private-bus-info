@@ -145,6 +145,11 @@ async function search() {
                     allTrips.push(...tripData.filter(trip => trip !== null));
                 }
             });
+
+            // Sort the trips based on departure time
+            allTrips.sort((a, b) => {
+                return new Date(`2000-01-01T${a.departureTime}`) - new Date(`2000-01-01T${b.departureTime}`);
+            });
         } else {
             console.error('Invalid data structure. Expected "busSchedules" property to exist.');
         }
