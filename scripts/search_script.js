@@ -120,48 +120,47 @@ async function search() {
 					const selectedStations = schedule.route.slice(routeIndex, destinationIndex + 1);
 		
 					const tripData = schedule.schedule.map(trip => {
-
+						// Add console.log statements to debug
 						console.log('schedule:', schedule);
 						console.log('trip:', trip);
 		
-						const stations = trip.stations.filter(station => selectedStations.includes(station.station.trim()));
+						const stations = trip.stations;
+						if (!stations) {
+							console.error('Stations array is missing in trip:', trip);
+							return null; // Skip this trip if stations array is missing
+						}
+		
+						const filteredStations = stations.filter(station => selectedStations.includes(station.station.trim()));
+						if (filteredStations.length === 0) {
+							console.error('No matching stations found for trip:', trip);
+							return null; // Skip this trip if no matching stations are found
+						}
+		
 						return {
 							vehicleNumber: schedule["Vehicle Number"],
 							tripNumber: trip.trip,
-							departureStation: stations[0].station.trim(),
-							arrivalStation: stations[stations.length - 1].station.trim(),
-							departureTime: stations[0].departureTime,
+							departureStation: filteredStations[0].station.trim(),
+							arrivalStation: filteredStations[filteredStations.length - 1].station.trim(),
+							departureTime: filteredStations[0].departureTime,
 						};
 					});
 		
-					allTrips.push(...tripData);
+					// Filter out trips with null values (errors)
+					allTrips.push(...tripData.filter(trip => trip !== null));
+					const tableHead = document.querySelector('thead');
+					if (allTrips.length > 0) {
+
+						tableHead.style.display = 'table-header-group';
+					} else {
+
+						tableHead.style.display = 'none';
+					}
 				}
 			});
 		} else {
 			console.error('Invalid data structure. Expected "busSchedules" property to exist.');
 		}
-
-        allTrips.sort((a, b) => {
-            const timeA = new Date(a.departureTime).getTime();
-            const timeB = new Date(b.departureTime).getTime();
-            return timeA - timeB;
-        });
-
-        displayResults(allTrips);
-
-        const resultTable = document.getElementById('resultTable');
-        const noRouteMessage = document.getElementById('noRouteMessage');
-        if (allTrips.length > 0) {
-            resultTable.style.display = 'table';
-            noRouteMessage.style.display = 'none';
-        } else {
-            resultTable.style.display = 'none';
-            noRouteMessage.style.display = 'block';
-        }
-    } catch (error) {
-        console.error('Error fetching or parsing JSON data:', error);
-    }
-}
+	}
 
 function displayResults(results) {
     const tableBody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
