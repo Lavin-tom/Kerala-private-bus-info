@@ -139,13 +139,15 @@ async function search() {
 
                         const hasAllStations = selectedStations.every(selectedStation =>
                             stations.some(station =>
+                                selectedStation.station && selectedStation.departureTime &&
+                                station.station && station.departureTime &&
                                 selectedStation.station.trim() === station.station.trim() &&
                                 selectedStation.departureTime === station.departureTime
                             )
                         );
 
                         if (hasAllStations) {
-
+  
                             tableHead.style.display = '';
 
                             const row = tableBody.insertRow();
