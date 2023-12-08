@@ -139,23 +139,23 @@ async function search() {
 			
 				const matchingStations = selectedStations.map(selectedStation =>
 					stations.find(station =>
-						selectedStation.station.trim() === station.station.trim() &&
-						selectedStation.departureTime === station.departureTime
+						selectedStation.station.trim() === (station && station.station && station.station.trim()) &&
+						selectedStation.departureTime === (station && station.departureTime)
 					)
 				);
-			
+				
 				const hasAllStations = matchingStations.every(station => station !== undefined);
-			
+				
 				if (hasAllStations) {
-					// Display the table heading only once
+
 					tableHead.style.display = '';
-			
+				
 					const row = tableBody.insertRow();
 					const cell1 = row.insertCell(0);
 					const cell2 = row.insertCell(1);
 					const cell3 = row.insertCell(2);
 					const cell4 = row.insertCell(3);
-			
+				
 					cell1.textContent = schedule["Vehicle Number"];
 					cell2.textContent = matchingStations[0].station.trim();
 					cell3.textContent = matchingStations[matchingStations.length - 1].station.trim();
