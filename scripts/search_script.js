@@ -110,10 +110,6 @@ async function search() {
         const response = await fetch(jsonFilePath);
         console.log('Response status:', response.status);
 
-        if (!response.ok) {
-            throw new Error('Failed to fetch data. Please try again.');
-        }
-
         const jsonData = await response.json();
         console.log('Fetched JSON data:', jsonData);
 
@@ -141,8 +137,14 @@ async function search() {
                             return;
                         }
 
-                        const filteredStations = stations.filter(station => selectedStations.includes(station.station.trim()));
-                        if (filteredStations.length === selectedStations.length) {
+                        const hasAllStations = selectedStations.every(selectedStation =>
+                            stations.some(station =>
+                                selectedStation.station.trim() === station.station.trim() &&
+                                selectedStation.departureTime === station.departureTime
+                            )
+                        );
+
+                        if (hasAllStations) {
 
                             tableHead.style.display = '';
 
@@ -153,9 +155,9 @@ async function search() {
                             const cell4 = row.insertCell(3);
 
                             cell1.textContent = schedule["Vehicle Number"];
-                            cell2.textContent = filteredStations[0].station.trim();
-                            cell3.textContent = filteredStations[filteredStations.length - 1].station.trim();
-                            cell4.textContent = filteredStations[0].departureTime;
+                            cell2.textContent = selectedStations[0].station.trim();
+                            cell3.textContent = selectedStations[selectedStations.length - 1].station.trim();
+                            cell4.textContent = selectedStations[0].departureTime;
                         }
                     });
                 }
