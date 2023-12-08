@@ -107,6 +107,10 @@ async function search() {
 
     try {
         const response = await fetch(jsonFilePath);
+        if (!response.ok) {
+            throw new Error('Failed to fetch data. Please try again.');
+        }
+
         const jsonData = await response.json();
 
         const allTrips = [];
@@ -141,25 +145,21 @@ async function search() {
                         };
                     });
 
-
                     allTrips.push(...tripData.filter(trip => trip !== null));
                 }
             });
-
-            // Sort the trips based on departure time
-            allTrips.sort((a, b) => {
-                return new Date(`2000-01-01T${a.departureTime}`) - new Date(`2000-01-01T${b.departureTime}`);
-            });
         } else {
             console.error('Invalid data structure. Expected "busSchedules" property to exist.');
+            document.getElementById('noRouteMessage').textContent = 'Invalid data structure. Please try again.';
         }
-
 
         displayResults(allTrips);
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
+        document.getElementById('noRouteMessage').textContent = 'Error fetching or parsing data. Please try again.';
     }
 }
+
 
 function displayResults(results) {
     const tableBody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
