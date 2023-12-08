@@ -63,6 +63,11 @@ th, td {
 th {
     font-weight: bold;
 }
+thead {
+    display: none;
+    background-color: #007BFF;
+    color: #fff;
+}
 
 #noRouteMessage {
     margin-top: 20px;
