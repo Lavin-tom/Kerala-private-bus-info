@@ -118,6 +118,7 @@ async function search() {
         const tableBody = table.getElementsByTagName('tbody')[0];
         const tableHead = table.getElementsByTagName('thead')[0];
 
+
         tableHead.style.display = 'none';
 
         tableBody.innerHTML = '';
@@ -138,7 +139,7 @@ async function search() {
                         }
 
                         const filteredStations = stations.filter(station => selectedStations.includes(station.station.trim()));
-                        if (filteredStations.length > 0) {
+                        if (filteredStations.length === selectedStations.length) {
 
                             tableHead.style.display = '';
 
