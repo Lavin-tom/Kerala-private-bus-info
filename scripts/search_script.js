@@ -96,6 +96,7 @@ var busStations = {
 				throw error;	
 			}	
     }
+
 async function search() {
     var dropdown1Value = document.getElementById("dropdown1").value;
     var dropdown2Value = document.getElementById("dropdown2").value;
@@ -113,7 +114,13 @@ async function search() {
 
         const jsonData = await response.json();
 
-        const allTrips = [];
+        const table = document.getElementById('resultTable');
+        const tableBody = table.getElementsByTagName('tbody')[0];
+        const tableHead = table.getElementsByTagName('thead')[0];
+
+        tableHead.style.display = 'none';
+
+        tableBody.innerHTML = '';
 
         if (jsonData.busSchedules) {
             jsonData.busSchedules.forEach(schedule => {
@@ -123,43 +130,41 @@ async function search() {
                 if (routeIndex >= 0 && destinationIndex >= 0 && routeIndex < destinationIndex) {
                     const selectedStations = schedule.route.slice(routeIndex, destinationIndex + 1);
 
-                    const tripData = schedule.schedule.map(trip => {
+                    schedule.schedule.forEach(trip => {
                         const stations = trip.stations;
                         if (!stations) {
                             console.error('Stations array is missing in trip:', trip);
-                            return null;
+                            return;
                         }
 
                         const filteredStations = stations.filter(station => selectedStations.includes(station.station.trim()));
-                        if (filteredStations.length === 0) {
-                            console.error('No matching stations found for trip:', trip);
-                            return null;
+                        if (filteredStations.length > 0) {
+
+                            tableHead.style.display = '';
+
+                            const row = tableBody.insertRow();
+                            const cell1 = row.insertCell(0);
+                            const cell2 = row.insertCell(1);
+                            const cell3 = row.insertCell(2);
+                            const cell4 = row.insertCell(3);
+
+                            cell1.textContent = schedule["Vehicle Number"];
+                            cell2.textContent = filteredStations[0].station.trim();
+                            cell3.textContent = filteredStations[filteredStations.length - 1].station.trim();
+                            cell4.textContent = filteredStations[0].departureTime;
                         }
-
-                        return {
-                            vehicleNumber: schedule["Vehicle Number"],
-                            tripNumber: trip.trip,
-                            departureStation: filteredStations[0].station.trim(),
-                            arrivalStation: filteredStations[filteredStations.length - 1].station.trim(),
-                            departureTime: filteredStations[0].departureTime,
-                        };
                     });
-
-                    allTrips.push(...tripData.filter(trip => trip !== null));
                 }
             });
         } else {
             console.error('Invalid data structure. Expected "busSchedules" property to exist.');
             document.getElementById('noRouteMessage').textContent = 'Invalid data structure. Please try again.';
         }
-
-        displayResults(allTrips);
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
         document.getElementById('noRouteMessage').textContent = 'Error fetching or parsing data. Please try again.';
     }
 }
-
 
 function displayResults(results) {
     const tableBody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
