@@ -130,24 +130,31 @@ async function search() {
                 if (routeIndex >= 0 && destinationIndex >= 0 && routeIndex < destinationIndex) {
                     const selectedStations = schedule.route.slice(routeIndex, destinationIndex + 1);
 
-                    schedule.schedule.forEach(trip => {
-                        const stations = trip.stations;
-                        if (!stations) {
-                            console.error('Stations array is missing in trip:', trip);
-                            return;
-                        }
-
-                        const hasAllStations = selectedStations.every(selectedStation =>
-                            stations.some(station =>
-                                selectedStation.station && selectedStation.departureTime &&
-                                station.station && station.departureTime &&
-                                selectedStation.station.trim() === station.station.trim() &&
-                                selectedStation.departureTime === station.departureTime
-                            )
-                        );
+					schedule.schedule.forEach(trip => {
+						const stations = trip.stations;
+						if (!stations) {
+							console.error('Stations array is missing in trip:', trip);
+							return;
+						}
+					
+						const hasAllStations = selectedStations.every(selectedStation =>
+							stations.some(station => {
+								console.log("Selected Station:", selectedStation);
+								console.log("Current Station:", station);
+					
+								return (
+									selectedStation.station &&
+									selectedStation.departureTime &&
+									station.station &&
+									station.departureTime &&
+									selectedStation.station.trim() === station.station.trim() &&
+									selectedStation.departureTime === station.departureTime
+								);
+							})
+						);
 
                         if (hasAllStations) {
-  
+
                             tableHead.style.display = '';
 
                             const row = tableBody.insertRow();
