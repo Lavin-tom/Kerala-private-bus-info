@@ -130,45 +130,38 @@ async function search() {
                 if (routeIndex >= 0 && destinationIndex >= 0 && routeIndex < destinationIndex) {
                     const selectedStations = schedule.route.slice(routeIndex, destinationIndex + 1);
 
-					schedule.schedule.forEach(trip => {
-						const stations = trip.stations;
-						if (!stations) {
-							console.error('Stations array is missing in trip:', trip);
-							return;
-						}
-					
-						const hasAllStations = selectedStations.every(selectedStation =>
-							stations.some(station => {
-								console.log("Selected Station:", selectedStation);
-								console.log("Current Station:", station);
-					
-								return (
-									selectedStation.station &&
-									selectedStation.departureTime &&
-									station.station &&
-									station.departureTime &&
-									selectedStation.station.trim() === station.station.trim() &&
-									selectedStation.departureTime === station.departureTime
-								);
-							})
-						);
-
-                        if (hasAllStations) {
-
-                            tableHead.style.display = '';
-
-                            const row = tableBody.insertRow();
-                            const cell1 = row.insertCell(0);
-                            const cell2 = row.insertCell(1);
-                            const cell3 = row.insertCell(2);
-                            const cell4 = row.insertCell(3);
-
-                            cell1.textContent = schedule["Vehicle Number"];
-                            cell2.textContent = selectedStations[0].station.trim();
-                            cell3.textContent = selectedStations[selectedStations.length - 1].station.trim();
-                            cell4.textContent = selectedStations[0].departureTime;
-                        }
-                    });
+			schedule.schedule.forEach(trip => {
+				const stations = trip.stations;
+				if (!stations) {
+					console.error('Stations array is missing in trip:', trip);
+					return;
+				}
+			
+				const matchingStations = selectedStations.map(selectedStation =>
+					stations.find(station =>
+						selectedStation.station.trim() === station.station.trim() &&
+						selectedStation.departureTime === station.departureTime
+					)
+				);
+			
+				const hasAllStations = matchingStations.every(station => station !== undefined);
+			
+				if (hasAllStations) {
+					// Display the table heading only once
+					tableHead.style.display = '';
+			
+					const row = tableBody.insertRow();
+					const cell1 = row.insertCell(0);
+					const cell2 = row.insertCell(1);
+					const cell3 = row.insertCell(2);
+					const cell4 = row.insertCell(3);
+			
+					cell1.textContent = schedule["Vehicle Number"];
+					cell2.textContent = matchingStations[0].station.trim();
+					cell3.textContent = matchingStations[matchingStations.length - 1].station.trim();
+					cell4.textContent = matchingStations[0].departureTime;
+				}
+			});
                 }
             });
         } else {
