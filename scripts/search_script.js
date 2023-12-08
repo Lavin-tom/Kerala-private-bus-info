@@ -108,17 +108,20 @@ async function search() {
 
     try {
         const response = await fetch(jsonFilePath);
+        console.log('Response status:', response.status);
+
         if (!response.ok) {
             throw new Error('Failed to fetch data. Please try again.');
         }
 
         const jsonData = await response.json();
+        console.log('Fetched JSON data:', jsonData);
 
         const table = document.getElementById('resultTable');
         const tableBody = table.getElementsByTagName('tbody')[0];
         const tableHead = table.getElementsByTagName('thead')[0];
 
-        // Initially hide the table heading
+
         tableHead.style.display = 'none';
 
         tableBody.innerHTML = '';
@@ -140,7 +143,7 @@ async function search() {
 
                         const filteredStations = stations.filter(station => selectedStations.includes(station.station.trim()));
                         if (filteredStations.length === selectedStations.length) {
-                            // Display the table heading only once
+
                             tableHead.style.display = '';
 
                             const row = tableBody.insertRow();
