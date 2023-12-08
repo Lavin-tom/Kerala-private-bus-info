@@ -118,7 +118,7 @@ async function search() {
         const tableBody = table.getElementsByTagName('tbody')[0];
         const tableHead = table.getElementsByTagName('thead')[0];
 
-
+        // Initially hide the table heading
         tableHead.style.display = 'none';
 
         tableBody.innerHTML = '';
@@ -140,7 +140,7 @@ async function search() {
 
                         const filteredStations = stations.filter(station => selectedStations.includes(station.station.trim()));
                         if (filteredStations.length === selectedStations.length) {
-
+                            // Display the table heading only once
                             tableHead.style.display = '';
 
                             const row = tableBody.insertRow();
@@ -165,23 +165,4 @@ async function search() {
         console.error('Error fetching or parsing JSON data:', error);
         document.getElementById('noRouteMessage').textContent = 'Error fetching or parsing data. Please try again.';
     }
-}
-
-function displayResults(results) {
-    const tableBody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
-
-    tableBody.innerHTML = '';
-
-    results.forEach(result => {
-        const row = tableBody.insertRow();
-        const cell1 = row.insertCell(0);
-        const cell2 = row.insertCell(1);
-        const cell3 = row.insertCell(2);
-        const cell4 = row.insertCell(3);
-
-        cell1.textContent = result.vehicleNumber;
-        cell2.textContent = result.departureStation;
-        cell3.textContent = result.arrivalStation;
-        cell4.textContent = result.departureTime;
-    });
 }
