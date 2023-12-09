@@ -120,6 +120,8 @@ async function search() {
         tableBody.innerHTML = '';
 
         if (jsonData && jsonData.busSchedules && jsonData.busSchedules.length > 0) {
+            let routesFound = false;
+
             jsonData.busSchedules.forEach(schedule => {
                 const routeIndex2 = schedule.route.indexOf(dropdown2Value);
                 const destinationIndex2 = schedule.route.indexOf(dropdown3Value);
@@ -143,7 +145,8 @@ async function search() {
                     });
 
                     if (selectedTrips.length > 0) {
-                        // Display the table heading only when results are found
+                        routesFound = true;
+
                         tableHead.style.display = 'table-header-group';
 
                         selectedTrips.forEach(trip => {
@@ -162,9 +165,19 @@ async function search() {
                     }
                 }
             });
+
+            if (!routesFound) {
+                // No routes found message
+                document.getElementById('noRouteMessage').textContent = 'No routes found for the selected stations.';
+            }
         } else {
             console.error('Invalid data structure. Expected "busSchedules" property to exist.');
             document.getElementById('noRouteMessage').textContent = 'Invalid data structure. Please try again.';
+        }
+
+        // If both dropdown values are the same
+        if (dropdown2Value === dropdown3Value) {
+            document.getElementById('noRouteMessage').textContent = 'Please select different starting and destination stations.';
         }
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
