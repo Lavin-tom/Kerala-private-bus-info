@@ -100,24 +100,38 @@ function sortResultsByTime(results) {
     // Create a copy of the results array
     const resultsCopy = [...results];
 
-    // Sort the copied array based on departure time
+    // Sort the copied array based on departure time as a string
     resultsCopy.sort((a, b) => {
-        // Convert departure times to minutes for comparison
-        const timeA = convertToMinutes(a.departureTime);
-        const timeB = convertToMinutes(b.departureTime);
+        // Convert departure times to strings for comparison
+        const timeA = a.departureTime.toLowerCase(); // Convert to lowercase for case-insensitive sorting
+        const timeB = b.departureTime.toLowerCase();
 
-        // Compare departure times
-        return timeA - timeB;
+        // Compare departure times as strings
+        return timeA.localeCompare(timeB);
     });
 
     return resultsCopy;
 }
 
-// Function to convert time in HH:mm format to minutes
-function convertToMinutes(time) {
-    const [hours, minutes] = time.split(':');
-    return parseInt(hours, 10) * 60 + parseInt(minutes, 10);
+function displayResults(results) {
+    const table = document.getElementById('resultTable');
+    const tbody = table.getElementsByTagName('tbody')[0];
+
+    // Clear existing table body
+    tbody.innerHTML = '';
+
+    // Populate table with results
+    results.forEach(result => {
+        const row = tbody.insertRow();
+        const values = [result.vehicleNumber, result.startStation, result.endStation, result.departureTime];
+
+        values.forEach(value => {
+            const cell = row.insertCell();
+            cell.textContent = value;
+        });
+    });
 }
+
 async function search() {
     try {
         // Reset the noRouteMessage element
@@ -199,6 +213,11 @@ async function search() {
                         });
                     }
                 }
+		// Sorting the results by time
+		const sortedResults = sortResultsByTime(searchResults);
+
+		// Displaying the sorted results in the existing table
+		displayResults(sortedResults);				
             });
 
             if (!routeFound) {
