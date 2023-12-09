@@ -144,7 +144,7 @@ async function search() {
 
                     if (selectedTrips.length > 0) {
 
-                        tableHead.style.display = '';
+                        tableHead.style.display = 'table-header-group';
 
                         selectedTrips.forEach(trip => {
                             const stations = trip.stations;
