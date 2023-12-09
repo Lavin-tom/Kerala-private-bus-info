@@ -98,15 +98,14 @@ var busStations = {
     }
 
 async function search() {
-    var dropdown1Value = document.getElementById("dropdown1").value;
-    var dropdown2Value = document.getElementById("dropdown2").value;
-    var dropdown3Value = document.getElementById("dropdown3").value;
-
-    console.log("Searching with values:", dropdown1Value, dropdown2Value, dropdown3Value);
-
-    var jsonFilePath = 'res/' + dropdown1Value.toLowerCase() + '.json';
-
     try {
+        const dropdown1Value = document.getElementById("dropdown1").value;
+        const dropdown2Value = document.getElementById("dropdown2").value;
+        const dropdown3Value = document.getElementById("dropdown3").value;
+
+        console.log("Searching with values:", dropdown1Value, dropdown2Value, dropdown3Value);
+
+        const jsonFilePath = 'res/' + dropdown1Value.toLowerCase() + '.json';
         const response = await fetch(jsonFilePath);
         console.log('Response status:', response.status);
 
@@ -117,9 +116,7 @@ async function search() {
         const tableBody = table.getElementsByTagName('tbody')[0];
         const tableHead = table.getElementsByTagName('thead')[0];
 
-
         tableHead.style.display = 'none';
-
         tableBody.innerHTML = '';
 
         if (jsonData.busSchedules) {
@@ -128,40 +125,29 @@ async function search() {
                 const destinationIndex = schedule.route.indexOf(dropdown3Value);
 
                 if (routeIndex >= 0 && destinationIndex >= 0 && routeIndex < destinationIndex) {
-                    const selectedStations = schedule.route.slice(routeIndex, destinationIndex + 1);
+                    schedule.schedule.forEach(trip => {
+                        const stations = trip.stations;
+                        const startIndex = schedule.route.findIndex(station => station === dropdown2Value);
+                        const endIndex = schedule.route.findIndex(station => station === dropdown3Value);
 
-			schedule.schedule.forEach(trip => {
-				const stations = trip.stations;
-				if (!stations) {
-					console.error('Stations array is missing in trip:', trip);
-					return;
-				}
-			
-				const matchingStations = selectedStations.map(selectedStation =>
-					stations.find(station =>
-						selectedStation.station.trim() === (station && station.station && station.station.trim()) &&
-						selectedStation.departureTime === (station && station.departureTime)
-					)
-				);
-				
-				const hasAllStations = matchingStations.every(station => station !== undefined);
+                        if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
+                            const selectedStations = stations.slice(startIndex, endIndex + 1);
 
-				
-				if (hasAllStations) {
-					tableHead.style.display = '';
-				
-					const row = tableBody.insertRow();
-					const cell1 = row.insertCell(0);
-					const cell2 = row.insertCell(1);
-					const cell3 = row.insertCell(2);
-					const cell4 = row.insertCell(3);
-				
-					cell1.textContent = schedule["Vehicle Number"];
-					cell2.textContent = matchingStations[0].station.trim();
-					cell3.textContent = matchingStations[matchingStations.length - 1].station.trim();
-					cell4.textContent = matchingStations[0].departureTime;
-				}
-			});
+
+                            tableHead.style.display = '';
+
+                            const row = tableBody.insertRow();
+                            const cell1 = row.insertCell(0);
+                            const cell2 = row.insertCell(1);
+                            const cell3 = row.insertCell(2);
+                            const cell4 = row.insertCell(3);
+
+                            cell1.textContent = schedule["Vehicle Number"];
+                            cell2.textContent = selectedStations[0].station.trim();
+                            cell3.textContent = selectedStations[selectedStations.length - 1].station.trim();
+                            cell4.textContent = selectedStations[0].departureTime;
+                        }
+                    });
                 }
             });
         } else {
