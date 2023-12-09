@@ -126,8 +126,8 @@ async function search() {
 
                 if (routeIndex2 >= 0 && destinationIndex2 >= 0 && routeIndex2 < destinationIndex2) {
                     const selectedTrips = schedule.schedule.filter(trip => {
-                        const startIndex = schedule.route.findIndex(station => station === dropdown2Value);
-                        const endIndex = schedule.route.findIndex(station => station === dropdown3Value);
+                        const startIndex = schedule.route.indexOf(dropdown2Value);
+                        const endIndex = schedule.route.indexOf(dropdown3Value);
                         const stations = trip.stations;
 
                         return (
@@ -171,3 +171,4 @@ async function search() {
         document.getElementById('noRouteMessage').textContent = 'Error fetching or parsing data. Please try again.';
     }
 }
+
