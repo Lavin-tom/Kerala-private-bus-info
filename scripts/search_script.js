@@ -111,16 +111,10 @@ async function search() {
 
         const jsonData = await response.json();
         console.log('Fetched JSON data:', jsonData);
-		
-		const tableHead = document.getElementById('resultTable').getElementsByTagName('thead')[0];
-        tableHead.style.display = 'none'; // Hide table heading initially
-		
-		const noRouteMessage = document.getElementById('noRouteMessage');
-        noRouteMessage.textContent = ''; // Clear previous messages		
-		
+
         const table = document.getElementById('resultTable');
         const tableBody = table.getElementsByTagName('tbody')[0];
-        tableHead = table.getElementsByTagName('thead')[0];
+        const tableHead = table.getElementsByTagName('thead')[0];
 
         tableHead.style.display = 'none';
         tableBody.innerHTML = '';
@@ -149,7 +143,7 @@ async function search() {
                     });
 
                     if (selectedTrips.length > 0) {
-
+                        // Display the table heading only when results are found
                         tableHead.style.display = 'table-header-group';
 
                         selectedTrips.forEach(trip => {
@@ -169,17 +163,11 @@ async function search() {
                 }
             });
         } else {
-			noRouteMessage.textContent = 'No route found between selected stations.';
-            if (dropdown2Value === dropdown3Value) {
-                noRouteMessage.textContent = 'Warning: Both departure and arrival stations are the same.';
-            }			
             console.error('Invalid data structure. Expected "busSchedules" property to exist.');
             document.getElementById('noRouteMessage').textContent = 'Invalid data structure. Please try again.';
         }
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
-        noRouteMessage.textContent = 'Error fetching or parsing data. Please try again.';
+        document.getElementById('noRouteMessage').textContent = 'Error fetching or parsing data. Please try again.';
     }
 }
-
-
