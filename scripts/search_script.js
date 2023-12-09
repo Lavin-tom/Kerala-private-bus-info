@@ -119,7 +119,7 @@ async function search() {
         tableHead.style.display = 'none';
         tableBody.innerHTML = '';
 
-        if (jsonData.busSchedules) {
+        if (jsonData && jsonData.busSchedules && jsonData.busSchedules.length > 0) {
             jsonData.busSchedules.forEach(schedule => {
                 const routeIndex = schedule.route.indexOf(dropdown2Value);
                 const destinationIndex = schedule.route.indexOf(dropdown3Value);
