@@ -134,7 +134,10 @@ async function search() {
                             startIndex !== -1 &&
                             endIndex !== -1 &&
                             endIndex > startIndex &&
+                            stations &&
+                            stations[startIndex] &&
                             stations[startIndex].station === dropdown2Value &&
+                            stations[endIndex] &&
                             stations[endIndex].station === dropdown3Value
                         );
                     });
