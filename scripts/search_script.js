@@ -99,6 +99,9 @@ var busStations = {
 
 async function search() {
     try {
+        // Reset the noRouteMessage element
+        document.getElementById('noRouteMessage').textContent = '';
+
         const dropdown1Value = document.getElementById("dropdown1").value;
         const dropdown2Value = document.getElementById("dropdown2").value;
         const dropdown3Value = document.getElementById("dropdown3").value;
@@ -120,7 +123,7 @@ async function search() {
         tableBody.innerHTML = '';
 
         if (jsonData && jsonData.busSchedules && jsonData.busSchedules.length > 0) {
-            let routesFound = false;
+            let routeFound = false; // Flag to check if any route is found
 
             jsonData.busSchedules.forEach(schedule => {
                 const routeIndex2 = schedule.route.indexOf(dropdown2Value);
@@ -145,9 +148,9 @@ async function search() {
                     });
 
                     if (selectedTrips.length > 0) {
-                        routesFound = true;
-
+                        // Display the table heading only when results are found
                         tableHead.style.display = 'table-header-group';
+                        routeFound = true; // Set the flag to true
 
                         selectedTrips.forEach(trip => {
                             const stations = trip.stations;
@@ -166,18 +169,18 @@ async function search() {
                 }
             });
 
-            if (!routesFound) {
-                // No routes found message
-                document.getElementById('noRouteMessage').textContent = 'No routes found for the selected stations.';
+            if (!routeFound) {
+                // Display a message when no route is found
+                document.getElementById('noRouteMessage').textContent = 'No route found for the selected values.';
             }
         } else {
             console.error('Invalid data structure. Expected "busSchedules" property to exist.');
             document.getElementById('noRouteMessage').textContent = 'Invalid data structure. Please try again.';
         }
 
-        // If both dropdown values are the same
         if (dropdown2Value === dropdown3Value) {
-            document.getElementById('noRouteMessage').textContent = 'Please select different starting and destination stations.';
+            // Display a message when both dropdown values are the same
+            document.getElementById('noRouteMessage').textContent = 'Please select different values for dropdown2 and dropdown3.';
         }
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
