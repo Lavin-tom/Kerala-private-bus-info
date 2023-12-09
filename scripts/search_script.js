@@ -125,7 +125,7 @@ async function search() {
                 const destinationIndex = schedule.route.indexOf(dropdown3Value);
 
                 if (routeIndex >= 0 && destinationIndex >= 0 && routeIndex < destinationIndex) {
-                    const selectedTrip = schedule.schedule.find(trip => {
+                    const selectedTrips = schedule.schedule.filter(trip => {
                         const startIndex = schedule.route.findIndex(station => station === dropdown2Value);
                         const endIndex = schedule.route.findIndex(station => station === dropdown3Value);
                         const stations = trip.stations;
@@ -140,21 +140,23 @@ async function search() {
                         );
                     });
 
-                    if (selectedTrip) {
-                        // Display the table heading only once
+                    if (selectedTrips.length > 0) {
+
                         tableHead.style.display = '';
 
-                        const stations = selectedTrip.stations;
-                        const row = tableBody.insertRow();
-                        const cell1 = row.insertCell(0);
-                        const cell2 = row.insertCell(1);
-                        const cell3 = row.insertCell(2);
-                        const cell4 = row.insertCell(3);
+                        selectedTrips.forEach(trip => {
+                            const stations = trip.stations;
+                            const row = tableBody.insertRow();
+                            const cell1 = row.insertCell(0);
+                            const cell2 = row.insertCell(1);
+                            const cell3 = row.insertCell(2);
+                            const cell4 = row.insertCell(3);
 
-                        cell1.textContent = schedule["Vehicle Number"];
-                        cell2.textContent = stations[0].station.trim();
-                        cell3.textContent = stations[stations.length - 1].station.trim();
-                        cell4.textContent = stations[0].departureTime;
+                            cell1.textContent = schedule["Vehicle Number"];
+                            cell2.textContent = stations[0].station.trim();
+                            cell3.textContent = stations[stations.length - 1].station.trim();
+                            cell4.textContent = stations[0].departureTime;
+                        });
                     }
                 }
             });
