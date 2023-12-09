@@ -201,3 +201,25 @@ async function search() {
         document.getElementById('noRouteMessage').textContent = 'Error fetching or parsing data. Please try again.';
     }
 }
+function sortResultsByTime(results) {
+    // Sort the results array based on departure time
+    results.sort((a, b) => {
+        // Convert departure times to minutes for comparison
+        const timeA = convertToMinutes(a.departureTime);
+        const timeB = convertToMinutes(b.departureTime);
+
+        // Compare departure times
+        return timeA - timeB;
+    });
+
+    return results;
+}
+
+// Function to convert time in HH:mm format to minutes
+function convertToMinutes(time) {
+    const [hours, minutes] = time.split(':');
+    return parseInt(hours, 10) * 60 + parseInt(minutes, 10);
+}
+
+const sortedResults = sortResultsByTime(searchResults);
+console.log('Sorted Results:', sortedResults);
