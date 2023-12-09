@@ -145,9 +145,9 @@ async function search() {
 				);
 				
 				const hasAllStations = matchingStations.every(station => station !== undefined);
+
 				
 				if (hasAllStations) {
-
 					tableHead.style.display = '';
 				
 					const row = tableBody.insertRow();
