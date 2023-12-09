@@ -97,8 +97,11 @@ var busStations = {
 			}	
     }
 function sortResultsByTime(results) {
-    // Sort the results array based on departure time
-    results.sort((a, b) => {
+    // Create a copy of the results array
+    const resultsCopy = [...results];
+
+    // Sort the copied array based on departure time
+    resultsCopy.sort((a, b) => {
         // Convert departure times to minutes for comparison
         const timeA = convertToMinutes(a.departureTime);
         const timeB = convertToMinutes(b.departureTime);
@@ -107,7 +110,7 @@ function sortResultsByTime(results) {
         return timeA - timeB;
     });
 
-    return results;
+    return resultsCopy;
 }
 
 // Function to convert time in HH:mm format to minutes
@@ -212,9 +215,8 @@ async function search() {
             document.getElementById('noRouteMessage').textContent = 'Please select different values for dropdown2 and dropdown3.';
         }
 
-        // Print the search results array to the console
-        console.log('Search Results:', searchResults);
 		const sortedResults = sortResultsByTime(searchResults);
+		console.log('Original Results:', searchResults);
 		console.log('Sorted Results:', sortedResults);
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
