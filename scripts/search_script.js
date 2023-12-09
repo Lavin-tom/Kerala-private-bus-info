@@ -111,7 +111,13 @@ async function search() {
 
         const jsonData = await response.json();
         console.log('Fetched JSON data:', jsonData);
-
+		
+		const tableHead = document.getElementById('resultTable').getElementsByTagName('thead')[0];
+        tableHead.style.display = 'none'; // Hide table heading initially
+		
+		const noRouteMessage = document.getElementById('noRouteMessage');
+        noRouteMessage.textContent = ''; // Clear previous messages		
+		
         const table = document.getElementById('resultTable');
         const tableBody = table.getElementsByTagName('tbody')[0];
         const tableHead = table.getElementsByTagName('thead')[0];
@@ -172,7 +178,7 @@ async function search() {
         }
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
-        document.getElementById('noRouteMessage').textContent = 'Error fetching or parsing data. Please try again.';
+        noRouteMessage.textContent = 'Error fetching or parsing data. Please try again.';
     }
 }
 
