@@ -97,21 +97,16 @@ var busStations = {
 			}	
     }
 function sortResultsByTime(results) {
-    // Create a copy of the results array
-    const resultsCopy = [...results];
+    return results.sort((a, b) => {
+        // Extract the time part from the departureTime (e.g., "1:00 pm")
+        const timeA = a.departureTime.split(' ')[0];
+        const timeB = b.departureTime.split(' ')[0];
 
-    // Sort the copied array based on departure time as a string
-    resultsCopy.sort((a, b) => {
-        // Convert departure times to strings for comparison
-        const timeA = a.departureTime.toLowerCase(); // Convert to lowercase for case-insensitive sorting
-        const timeB = b.departureTime.toLowerCase();
-
-        // Compare departure times as strings
+        // Use localeCompare to properly compare time strings
         return timeA.localeCompare(timeB);
     });
-
-    return resultsCopy;
 }
+
 
 function displayResults(results) {
     const table = document.getElementById('resultTable');
@@ -160,74 +155,68 @@ async function search() {
         // Array to store search results
         const searchResults = [];
 
-        if (jsonData && jsonData.busSchedules && jsonData.busSchedules.length > 0) {
-            let routeFound = false; // Flag to check if any route is found
-
-            jsonData.busSchedules.forEach(schedule => {
-                const routeIndex2 = schedule.route.indexOf(dropdown2Value);
-                const destinationIndex2 = schedule.route.indexOf(dropdown3Value);
-
-                if (routeIndex2 >= 0 && destinationIndex2 >= 0 && routeIndex2 < destinationIndex2) {
-                    const selectedTrips = schedule.schedule.filter(trip => {
-                        const startIndex = schedule.route.indexOf(dropdown2Value);
-                        const endIndex = schedule.route.indexOf(dropdown3Value);
-                        const stations = trip.stations;
-
-                        return (
-                            startIndex !== -1 &&
-                            endIndex !== -1 &&
-                            endIndex > startIndex &&
-                            stations &&
-                            stations[startIndex] &&
-                            stations[startIndex].station === dropdown2Value &&
-                            stations[endIndex] &&
-                            stations[endIndex].station === dropdown3Value
-                        );
-                    });
-
-                    if (selectedTrips.length > 0) {
-                        // Display the table heading only when results are found
-                        tableHead.style.display = 'table-header-group';
-                        routeFound = true; // Set the flag to true
-
-                        selectedTrips.forEach(trip => {
-                            const stations = trip.stations;
-                            const row = tableBody.insertRow();
-                            const cell1 = row.insertCell(0);
-                            const cell2 = row.insertCell(1);
-                            const cell3 = row.insertCell(2);
-                            const cell4 = row.insertCell(3);
-
-                            cell1.textContent = schedule["Vehicle Number"];
-                            cell2.textContent = stations[0].station.trim();
-                            cell3.textContent = stations[stations.length - 1].station.trim();
-                            cell4.textContent = stations[0].departureTime;
-
-                            // Store relevant information in the searchResults array
-                            searchResults.push({
-                                vehicleNumber: schedule["Vehicle Number"],
-                                startStation: stations[0].station.trim(),
-                                endStation: stations[stations.length - 1].station.trim(),
-                                departureTime: stations[0].departureTime
-                            });
-                        });
-                    }
-                }
-		// Sorting the results by time
-		const sortedResults = sortResultsByTime(searchResults);
-
-		// Displaying the sorted results in the existing table
-		displayResults(sortedResults);				
-            });
-
-            if (!routeFound) {
-                // Display a message when no route is found
-                document.getElementById('noRouteMessage').textContent = 'No route found for the selected values.';
-            }
-        } else {
-            console.error('Invalid data structure. Expected "busSchedules" property to exist.');
-            document.getElementById('noRouteMessage').textContent = 'Invalid data structure. Please try again.';
-        }
+		if (jsonData && jsonData.busSchedules && jsonData.busSchedules.length > 0) {
+			let routeFound = false; // Flag to check if any route is found
+		
+			jsonData.busSchedules.forEach(schedule => {
+				const routeIndex2 = schedule.route.indexOf(dropdown2Value);
+				const destinationIndex2 = schedule.route.indexOf(dropdown3Value);
+		
+				if (routeIndex2 >= 0 && destinationIndex2 >= 0 && routeIndex2 < destinationIndex2) {
+					const selectedTrips = schedule.schedule.filter(trip => {
+						const startIndex = schedule.route.indexOf(dropdown2Value);
+						const endIndex = schedule.route.indexOf(dropdown3Value);
+						const stations = trip.stations;
+		
+						return (
+							startIndex !== -1 &&
+							endIndex !== -1 &&
+							endIndex > startIndex &&
+							stations &&
+							stations[startIndex] &&
+							stations[startIndex].station === dropdown2Value &&
+							stations[endIndex] &&
+							stations[endIndex].station === dropdown3Value
+						);
+					});
+		
+					if (selectedTrips.length > 0) {
+						// Display the table heading only when results are found
+						tableHead.style.display = 'table-header-group';
+						routeFound = true; // Set the flag to true
+		
+						// Store only the relevant information in the searchResults array
+						selectedTrips.forEach(trip => {
+							const stations = trip.stations;
+		
+							// Only store trips where the start station matches dropdown2Value
+							if (stations[0].station.trim() === dropdown2Value) {
+								searchResults.push({
+									vehicleNumber: schedule["Vehicle Number"],
+									startStation: stations[0].station.trim(),
+									endStation: stations[stations.length - 1].station.trim(),
+									departureTime: stations[0].departureTime
+								});
+							}
+						});
+					}
+				}
+		
+				// Sorting the results by time
+				const sortedResults = sortResultsByTime(searchResults);
+		
+				// Displaying the sorted results in the existing table
+				displayResults(sortedResults);
+			});
+		
+			if (!routeFound) {
+				// Display a message when no route is found
+				document.getElementById('noRouteMessage').textContent = 'No route found for the selected values.';
+			}
+		} else {
+			console.error('Invalid data structure. Expected "busSchedules" property to exist.');
+			document.getElementById('noRouteMessage').textContent = 'Invalid data structure. Please try again.';
+		}
 
         if (dropdown2Value === dropdown3Value) {
             // Display a message when both dropdown values are the same
