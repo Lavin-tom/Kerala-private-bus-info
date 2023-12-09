@@ -163,6 +163,10 @@ async function search() {
                 }
             });
         } else {
+			noRouteMessage.textContent = 'No route found between selected stations.';
+            if (dropdown2Value === dropdown3Value) {
+                noRouteMessage.textContent = 'Warning: Both departure and arrival stations are the same.';
+            }			
             console.error('Invalid data structure. Expected "busSchedules" property to exist.');
             document.getElementById('noRouteMessage').textContent = 'Invalid data structure. Please try again.';
         }
@@ -171,4 +175,5 @@ async function search() {
         document.getElementById('noRouteMessage').textContent = 'Error fetching or parsing data. Please try again.';
     }
 }
+
 
