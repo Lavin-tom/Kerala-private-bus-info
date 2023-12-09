@@ -120,7 +120,7 @@ async function search() {
 		
         const table = document.getElementById('resultTable');
         const tableBody = table.getElementsByTagName('tbody')[0];
-        const tableHead = table.getElementsByTagName('thead')[0];
+        tableHead = table.getElementsByTagName('thead')[0];
 
         tableHead.style.display = 'none';
         tableBody.innerHTML = '';
