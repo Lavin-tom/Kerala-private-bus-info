@@ -126,17 +126,11 @@ async function search() {
 
                 if (routeIndex2 >= 0 && destinationIndex2 >= 0 && routeIndex2 < destinationIndex2) {
                     const selectedTrips = schedule.schedule.filter(trip => {
-                        const startIndex2 = schedule.route.findIndex(station => station === dropdown2Value);
-                        const endIndex2 = schedule.route.findIndex(station => station === dropdown3Value);
                         const stations2 = trip.stations;
 
-                        return (
-                            startIndex2 !== -1 &&
-                            endIndex2 !== -1 &&
-                            endIndex2 > startIndex2 &&
-                            stations2.length > endIndex2 &&
-                            stations2[startIndex2].station === dropdown2Value &&
-                            stations2[endIndex2].station === dropdown3Value
+                        return stations2.some(station =>
+                            station.station === dropdown2Value ||
+                            station.station === dropdown3Value
                         );
                     });
 
@@ -169,4 +163,3 @@ async function search() {
         document.getElementById('noRouteMessage').textContent = 'Error fetching or parsing data. Please try again.';
     }
 }
-
