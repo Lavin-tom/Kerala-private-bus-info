@@ -266,6 +266,7 @@ async function search() {
 
         // Array to store search results
         const searchResults = [];
+        // Declare sortedResults outside the if block
         let sortedResults;
 
         if (jsonData && jsonData.busSchedules && jsonData.busSchedules.length > 0) {
