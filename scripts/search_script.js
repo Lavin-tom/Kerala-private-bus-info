@@ -209,15 +209,15 @@ var busStations = {
 			}	
     }
 function sortResultsByTime(results) {
-    return results.sort((a, b) => {
-        // Extract the time part from the departureTime (e.g., "1:00 pm")
-        const timeA = a.departureTime.split(' ')[0];
-        const timeB = b.departureTime.split(' ')[0];
+    const sortedResults = [...results];
 
-        // Use localeCompare to properly compare time strings
-        return timeA.localeCompare(timeB);
+    sortedResults.sort((a, b) => {
+        return a.departureTime.localeCompare(b.departureTime);
     });
+
+    return sortedResults;
 }
+
 
 
 function displayResults(results) {
