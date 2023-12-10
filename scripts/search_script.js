@@ -266,6 +266,7 @@ async function search() {
 
         // Array to store search results
         const searchResults = [];
+        let sortedResults;
 
         if (jsonData && jsonData.busSchedules && jsonData.busSchedules.length > 0) {
             let routeFound = false; // Flag to check if any route is found
@@ -315,11 +316,15 @@ async function search() {
                 }
             });
 
-            // Sorting the results by time
-            const sortedResults = sortResultsByTime(searchResults);
-
-            // Displaying the sorted results in the existing table
-            displayResults(sortedResults);
+            if (routeFound) {
+                // Sorting the results by time
+                sortedResults = sortResultsByTime(searchResults);
+                // Displaying the sorted results in the existing table
+                displayResults(sortedResults);
+            } else {
+                // Display a message when no route is found
+                document.getElementById('noRouteMessage').textContent = 'No route found for the selected values.';
+            }
         } else {
             console.error('Invalid data structure. Expected "busSchedules" property to exist.');
             document.getElementById('noRouteMessage').textContent = 'Invalid data structure. Please try again.';
@@ -332,6 +337,7 @@ async function search() {
 
         console.log('Original Results:', searchResults);
         console.log('Sorted Results:', sortedResults);
+
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
         document.getElementById('noRouteMessage').textContent = 'Error fetching or parsing data. Please try again.';
