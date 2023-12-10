@@ -266,10 +266,10 @@ async function search() {
 
         // Array to store search results
         const searchResults = [];
-        // Declare sortedResults outside the if block
-        let sortedResults;
 
         if (jsonData && jsonData.busSchedules && jsonData.busSchedules.length > 0) {
+            let routeFound = false; // Flag to check if any route is found
+
             jsonData.busSchedules.forEach(schedule => {
                 const routeIndex2 = schedule.route.indexOf(dropdown2Value);
                 const destinationIndex2 = schedule.route.indexOf(dropdown3Value);
@@ -295,6 +295,7 @@ async function search() {
                     if (selectedTrips.length > 0) {
                         // Display the table heading only when results are found
                         tableHead.style.display = 'table-header-group';
+                        routeFound = true; // Set the flag to true
 
                         selectedTrips.forEach(trip => {
                             const stations = trip.stations;
@@ -308,17 +309,20 @@ async function search() {
                             cell2.textContent = stations[0].station.trim();
                             cell3.textContent = stations[stations.length - 1].station.trim();
                             cell4.textContent = stations[0].departureTime;
+
+                            // Store relevant information in the searchResults array
+                            searchResults.push({
+                                vehicleNumber: schedule["Vehicle Number"],
+                                startStation: stations[0].station.trim(),
+                                endStation: stations[stations.length - 1].station.trim(),
+                                departureTime: stations[0].departureTime
+                            });
                         });
                     }
                 }
             });
 
-            if (routeFound) {
-                // Sorting the results by time
-                sortedResults = sortResultsByTime(searchResults);
-                // Displaying the sorted results in the existing table
-                displayResults(sortedResults);
-            } else {
+            if (!routeFound) {
                 // Display a message when no route is found
                 document.getElementById('noRouteMessage').textContent = 'No route found for the selected values.';
             }
@@ -332,9 +336,11 @@ async function search() {
             document.getElementById('noRouteMessage').textContent = 'Please select different values for dropdown2 and dropdown3.';
         }
 
-        console.log('Original Results:', searchResults);
-        console.log('Sorted Results:', sortedResults);
-
+        // Print the search results array to the console
+        console.log('Search Results:', searchResults);
+		const sortedResults = sortResultsByTime(searchResults);
+		console.log('Sorted Results:', sortedResults);
+		displayResults(sortedResults);		
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
         document.getElementById('noRouteMessage').textContent = 'Error fetching or parsing data. Please try again.';
