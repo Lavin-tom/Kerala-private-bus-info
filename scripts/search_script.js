@@ -270,54 +270,47 @@ async function search() {
         let sortedResults;
 
         if (jsonData && jsonData.busSchedules && jsonData.busSchedules.length > 0) {
-            // Move the declaration of routeFound here
             let routeFound = false; // Flag to check if any route is found
 
             jsonData.busSchedules.forEach(schedule => {
                 const routeIndex2 = schedule.route.indexOf(dropdown2Value);
                 const destinationIndex2 = schedule.route.indexOf(dropdown3Value);
 
-                if (routeIndex2 >= 0 && destinationIndex2 >= 0 && routeIndex2 < destinationIndex2) {
-                    // Move the assignment of routeFound inside the if block
-                    routeFound = true; // Set the flag to true
+                if (routeIndex2 !== -1 && destinationIndex2 !== -1 && routeIndex2 < destinationIndex2) {
+                    // Found a matching route
+                    routeFound = true;
 
                     const selectedTrips = schedule.schedule.filter(trip => {
                         const startIndex = schedule.route.indexOf(dropdown2Value);
                         const endIndex = schedule.route.indexOf(dropdown3Value);
                         const stations = trip.stations;
 
-                        return (
-                            startIndex !== -1 &&
-                            endIndex !== -1 &&
-                            endIndex > startIndex &&
-                            stations &&
-                            stations[startIndex] &&
-                            stations[startIndex].station === dropdown2Value &&
-                            stations[endIndex] &&
-                            stations[endIndex].station === dropdown3Value
-                        );
-                    });
-
-                    selectedTrips.forEach(trip => {
-                        const stations = trip.stations;
-                        const startIndex = schedule.route.indexOf(dropdown2Value);
-                        const endIndex = schedule.route.indexOf(dropdown3Value);
-
                         // Check if dropdown2Value is the start station and dropdown3Value is inside the trip
-                        if (
+                        return (
                             startIndex !== -1 &&
                             endIndex !== -1 &&
                             endIndex > startIndex &&
                             stations[startIndex].station.trim() === dropdown2Value &&
                             stations[endIndex].station.trim() === dropdown3Value
-                        ) {
-                            searchResults.push({
-                                vehicleNumber: schedule["Vehicle Number"],
-                                startStation: stations[startIndex].station.trim(),
-                                endStation: stations[endIndex].station.trim(),
-                                departureTime: stations[startIndex].departureTime
-                            });
-                        }
+                        );
+                    });
+
+                    selectedTrips.forEach(trip => {
+                        const startIndex = schedule.route.indexOf(dropdown2Value);
+                        const endIndex = schedule.route.indexOf(dropdown3Value);
+                        const stations = trip.stations;
+
+                        // Mark the timings
+                        const startStationTime = stations[startIndex].departureTime;
+                        const endStationTime = stations[endIndex].departureTime;
+
+                        searchResults.push({
+                            vehicleNumber: schedule["Vehicle Number"],
+                            startStation: dropdown2Value,
+                            endStation: dropdown3Value,
+                            startStationTime,
+                            endStationTime
+                        });
                     });
                 }
             });
