@@ -294,28 +294,27 @@ async function search() {
                         );
                     });
 
-                    if (selectedTrips.length > 0) {
-                        // Display the table heading only when results are found
-                        tableHead.style.display = 'table-header-group';
-                        routeFound = true; // Set the flag to true
-
-                        // Store only the relevant information in the searchResults array
-                        selectedTrips.forEach(trip => {
-                            const stations = trip.stations;
-
-                            // Only store trips where the start station matches dropdown2Value
-                            if (stations[0].station.trim() === dropdown2Value) {
-                                searchResults.push({
-                                    vehicleNumber: schedule["Vehicle Number"],
-                                    startStation: stations[0].station.trim(),
-                                    endStation: stations[stations.length - 1].station.trim(),
-                                    departureTime: stations[0].departureTime
-                                });
-                            }
-                        });
-                    }
-                }
-            });
+					selectedTrips.forEach(trip => {
+						const stations = trip.stations;
+						const startIndex = schedule.route.indexOf(dropdown2Value);
+						const endIndex = schedule.route.indexOf(dropdown3Value);
+					
+						// Check if dropdown2Value is the start station and dropdown3Value is inside the trip
+						if (
+							startIndex !== -1 &&
+							endIndex !== -1 &&
+							endIndex > startIndex &&
+							stations[startIndex].station.trim() === dropdown2Value &&
+							stations[endIndex].station.trim() === dropdown3Value
+						) {
+							searchResults.push({
+								vehicleNumber: schedule["Vehicle Number"],
+								startStation: stations[startIndex].station.trim(),
+								endStation: stations[endIndex].station.trim(),
+								departureTime: stations[startIndex].departureTime
+							});
+						}
+					});
 
             if (routeFound) {
                 // Sorting the results by time
