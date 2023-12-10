@@ -202,30 +202,23 @@ async function search() {
 					}
 				}
 		
-				// Sorting the results by time
-				const sortedResults = sortResultsByTime(searchResults);
-		
-				// Displaying the sorted results in the existing table
-				displayResults(sortedResults);
-			});
-		
-			if (!routeFound) {
-				// Display a message when no route is found
-				document.getElementById('noRouteMessage').textContent = 'No route found for the selected values.';
-			}
-		} else {
-			console.error('Invalid data structure. Expected "busSchedules" property to exist.');
-			document.getElementById('noRouteMessage').textContent = 'Invalid data structure. Please try again.';
-		}
+            // Sorting the results by time
+            const sortedResults = sortResultsByTime(searchResults);
+
+            // Displaying the sorted results in the existing table
+            displayResults(sortedResults);
+        } else {
+            console.error('Invalid data structure. Expected "busSchedules" property to exist.');
+            document.getElementById('noRouteMessage').textContent = 'Invalid data structure. Please try again.';
+        }
 
         if (dropdown2Value === dropdown3Value) {
             // Display a message when both dropdown values are the same
             document.getElementById('noRouteMessage').textContent = 'Please select different values for dropdown2 and dropdown3.';
         }
 
-		const sortedResults = sortResultsByTime(searchResults);
-		console.log('Original Results:', searchResults);
-		console.log('Sorted Results:', sortedResults);
+        console.log('Original Results:', searchResults);
+        console.log('Sorted Results:', sortedResults);
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
         document.getElementById('noRouteMessage').textContent = 'Error fetching or parsing data. Please try again.';
