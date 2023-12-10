@@ -270,48 +270,46 @@ async function search() {
         let sortedResults;
 
         if (jsonData && jsonData.busSchedules && jsonData.busSchedules.length > 0) {
-            let routeFound = false; // Flag to check if any route is found
-
             jsonData.busSchedules.forEach(schedule => {
                 const routeIndex2 = schedule.route.indexOf(dropdown2Value);
                 const destinationIndex2 = schedule.route.indexOf(dropdown3Value);
 
-                if (routeIndex2 !== -1 && destinationIndex2 !== -1 && routeIndex2 < destinationIndex2) {
-                    // Found a matching route
-                    routeFound = true;
-
+                if (routeIndex2 >= 0 && destinationIndex2 >= 0 && routeIndex2 < destinationIndex2) {
                     const selectedTrips = schedule.schedule.filter(trip => {
                         const startIndex = schedule.route.indexOf(dropdown2Value);
                         const endIndex = schedule.route.indexOf(dropdown3Value);
                         const stations = trip.stations;
 
-                        // Check if dropdown2Value is the start station and dropdown3Value is inside the trip
                         return (
                             startIndex !== -1 &&
                             endIndex !== -1 &&
                             endIndex > startIndex &&
-                            stations[startIndex].station.trim() === dropdown2Value &&
-                            stations[endIndex].station.trim() === dropdown3Value
+                            stations &&
+                            stations[startIndex] &&
+                            stations[startIndex].station === dropdown2Value &&
+                            stations[endIndex] &&
+                            stations[endIndex].station === dropdown3Value
                         );
                     });
 
-                    selectedTrips.forEach(trip => {
-                        const startIndex = schedule.route.indexOf(dropdown2Value);
-                        const endIndex = schedule.route.indexOf(dropdown3Value);
-                        const stations = trip.stations;
+                    if (selectedTrips.length > 0) {
+                        // Display the table heading only when results are found
+                        tableHead.style.display = 'table-header-group';
 
-                        // Mark the timings
-                        const startStationTime = stations[startIndex].departureTime;
-                        const endStationTime = stations[endIndex].departureTime;
+                        selectedTrips.forEach(trip => {
+                            const stations = trip.stations;
+                            const row = tableBody.insertRow();
+                            const cell1 = row.insertCell(0);
+                            const cell2 = row.insertCell(1);
+                            const cell3 = row.insertCell(2);
+                            const cell4 = row.insertCell(3);
 
-                        searchResults.push({
-                            vehicleNumber: schedule["Vehicle Number"],
-                            startStation: dropdown2Value,
-                            endStation: dropdown3Value,
-                            startStationTime,
-                            endStationTime
+                            cell1.textContent = schedule["Vehicle Number"];
+                            cell2.textContent = stations[0].station.trim();
+                            cell3.textContent = stations[stations.length - 1].station.trim();
+                            cell4.textContent = stations[0].departureTime;
                         });
-                    });
+                    }
                 }
             });
 
