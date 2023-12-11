@@ -1,10 +1,10 @@
-import kottayam from './res/bus_stations/kottayam.js';
-import alappuzha from './res/bus_stations/alappuzha.js';
-import ernakulam from  './res/bus_stations/ernakulam.js';
-import pathanamthitta from './res/bus_stations/pathanamthitta.js';
-import idukki from './res/bus_stations/idukki.js';
-import kannur from './res/bus_stations/kannur.js';
-import attingal from './res/bus_stations/attingal.js';
+import kottayam from '../res/bus_stations/kottayam.js';
+import alappuzha from '../res/bus_stations/alappuzha.js';
+import ernakulam from  '../res/bus_stations/ernakulam.js';
+import pathanamthitta from '../res/bus_stations/pathanamthitta.js';
+import idukki from '../res/bus_stations/idukki.js';
+import kannur from '../res/bus_stations/kannur.js';
+import attingal from '../res/bus_stations/attingal.js';
 
 var options1 = ["Choose Nearest place","ALAPUZHA","ATTINGAL","ERNAKULAM","IDUKKI","KANNUR","KOTTAYAM","KOZHIKODE","MALAPURAM","MUVATTUPUZHA","PALAAKKAD","PATHANAMTHITTA","VADAKARA","WAYANAD"];	
 var option2 = {};	
