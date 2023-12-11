@@ -37,13 +37,15 @@ var busStations = {
 	document.getElementById("filterButton").addEventListener("click", function () {	
 		var selectedValue = document.getElementById("dropdown1").value;	
 		loadDropdown2(selectedValue);	
-	});	
+	});
+	}	
+	
 	function loadDropdown2(selectedValue) {	
 		var options2Array = busStations[selectedValue] || []; 	
 		loadOptions("dropdown2", options2Array);	
 		loadOptions("dropdown3",options2Array);	
 	}	
-		async function fetchJsonData(file) {	
+	async function fetchJsonData(file) {	
 			try {	
 				const response = await fetch(file);	
 				const jsonData = await response.json();	
