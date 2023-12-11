@@ -10,7 +10,7 @@ var options1 = ["Choose Nearest place","ALAPUZHA","ATTINGAL","ERNAKULAM","IDUKKI
 var option2 = {};	
 var busStations = {	
     "KOTTAYAM": kottayam,	
-    "ALAPPUZHA": alapuzha,
+    "ALAPPUZHA": alappuzha,
 	"ERNAKULAM": ernakulam,
 	"PATHANAMTHITTA": pathanamthitta,			
 	"IDUKKI": idukki,			
