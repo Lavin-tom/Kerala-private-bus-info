@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kerala Private Bus Timings</title>
     <link rel="stylesheet" type="text/css" href="stylesheets/home.css">
-    <script>
-        var options1 = ["Choose District","THIRUVANANTHAPURAM", "KOLLAM", "PATHANAMTHITTA", "ALAPUZHA", "KOTTAYAM", "IDUKKI", "ERNAKULAM", "TRISSUR", "PALAKKAD", "MALAPURAM", "KOZHIKODE", "WAYANAD", "KANNUR", "KASARAGOD"];
-    </script>
 </head>
 
 <body>
     <div class="container">
         <h1>Kerala Private Bus Timings</h1>
+
         <select id="dropdown1">Choose District</select><br>
         <button type="button" id="filterButton">Filter</button><br>
         <select id="dropdown2"></select><br>
@@ -37,7 +35,11 @@
         <div id="noRouteMessage"></div>
     </div>
 
-   <script src="scripts/search_script.js"></script>
-</body>
+    <!-- Footer -->
+    <footer>
+        <p>&copy; Lavin-Tom | <a href="https://github.com/Lavin-tom/Kerala-private-bus-info" target="_blank">GitHub</a></p>
+    </footer>
 
+    <script type="module" src="scripts/search_script.js"></script>
+</body>
 </html>
