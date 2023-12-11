@@ -6,55 +6,60 @@ import idukki from '../res/bus_stations/idukki.js';
 import kannur from '../res/bus_stations/kannur.js';
 import attingal from '../res/bus_stations/attingal.js';
 
-var options1 = ["Choose Nearest place","ALAPUZHA","ATTINGAL","ERNAKULAM","IDUKKI","KANNUR","KOTTAYAM","KOZHIKODE","MALAPURAM","MUVATTUPUZHA","PALAAKKAD","PATHANAMTHITTA","VADAKARA","WAYANAD"];	
-var option2 = {};	
-var busStations = {	
-    "KOTTAYAM": kottayam,	
+var options1 = ["Choose Nearest place","ALAPUZHA","ATTINGAL","ERNAKULAM","IDUKKI","KANNUR","KOTTAYAM","KOZHIKODE","MALAPURAM","MUVATTUPUZHA","PALAAKKAD","PATHANAMTHITTA","VADAKARA","WAYANAD"];
+var option2 = {};
+var busStations = {
+    "KOTTAYAM": kottayam,
     "ALAPPUZHA": alappuzha,
-	"ERNAKULAM": ernakulam,
-	"PATHANAMTHITTA": pathanamthitta,			
-	"IDUKKI": idukki,			
-	"ATTINGAL": attingal,			
-};	
-	function loadOptions(selectId, options) {	
-    var select = document.getElementById(selectId);	
-    select.innerHTML = '';	
+    "ERNAKULAM": ernakulam,
+    "PATHANAMTHITTA": pathanamthitta,
+    "IDUKKI": idukki,
+    "ATTINGAL": attingal,
+};
 
-    options.forEach(function (option) {	
-        var optionElement = document.createElement("option");	
-        optionElement.value = option;	
-        optionElement.text = option;	
-        select.add(optionElement);	
-    });	
-	}	
-	loadOptions("dropdown1", options1);
-	
-	//var dropdownselectedValue = document.getElementById("dropdown1").value;
-	//if(dropdownselectedValue == 'KOTTAYAM')
-	//		import kottayam from 'res/bus_station/kottayam.js';
-		
+function loadOptions(selectId, options) {
+    var select = document.getElementById(selectId);
+    select.innerHTML = '';
+
+    options.forEach(function (option) {
+        var optionElement = document.createElement("option");
+        optionElement.value = option;
+        optionElement.text = option;
+        select.add(optionElement);
+    });
+}
+
+loadOptions("dropdown1", options1);
+
+// Assuming you have a button with the id "filterButton"
+document.getElementById("filterButton").addEventListener("click", function () {
+    var dropdown1Value = document.getElementById("dropdown1").value;
+    var dropdown3Value = document.getElementById("dropdown3").value;
+
+    // Now you can use dropdown1Value and dropdown3Value
     if (dropdown1Value === dropdown3Value) {
-	document.getElementById("filterButton").addEventListener("click", function () {	
-		var selectedValue = document.getElementById("dropdown1").value;	
-		loadDropdown2(selectedValue);	
-	});
-	}	
-	
-	function loadDropdown2(selectedValue) {	
-		var options2Array = busStations[selectedValue] || []; 	
-		loadOptions("dropdown2", options2Array);	
-		loadOptions("dropdown3",options2Array);	
-	}	
-	async function fetchJsonData(file) {	
-			try {	
-				const response = await fetch(file);	
-				const jsonData = await response.json();	
-				return jsonData;	
-			} catch (error) {	
-				console.error('Error fetching JSON data:', error);	
-				throw error;	
-			}	
+        var selectedValue = document.getElementById("dropdown1").value;
+        loadDropdown2(selectedValue);
     }
+});
+
+function loadDropdown2(selectedValue) {
+    var options2Array = busStations[selectedValue] || [];
+    loadOptions("dropdown2", options2Array);
+    loadOptions("dropdown3", options2Array);
+}
+
+async function fetchJsonData(file) {
+    try {
+        const response = await fetch(file);
+        const jsonData = await response.json();
+        return jsonData;
+    } catch (error) {
+        console.error('Error fetching JSON data:', error);
+        throw error;
+    }
+}
+
 function sortResultsByTime(results) {
     const sortedResults = [...results];
 
