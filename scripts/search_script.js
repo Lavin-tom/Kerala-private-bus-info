@@ -92,7 +92,7 @@ function displayResults(results) {
     });
 }
 
-async function search() {
+function search() {
     try {
         // Reset the noRouteMessage element
         document.getElementById('noRouteMessage').textContent = '';
