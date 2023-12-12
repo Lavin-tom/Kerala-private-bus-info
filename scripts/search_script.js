@@ -36,6 +36,7 @@ document.getElementById("filterButton").addEventListener("click", function () {
     var dropdown1Value = document.getElementById("dropdown1").value;
     var dropdown3Value = document.getElementById("dropdown3").value;
 
+	loadDropdown2(dropdown1Value);
     // Now you can use dropdown1Value and dropdown3Value
     if (dropdown1Value === dropdown3Value) {
         var selectedValue = document.getElementById("dropdown1").value;
