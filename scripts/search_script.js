@@ -5,6 +5,7 @@
 //import idukki from '../res/bus_stations/idukki.js';
 //import kannur from '../res/bus_stations/kannur.js';
 //import attingal from '../res/bus_stations/attingal.js';
+//import kozhikode from '../res/bus_stations/kozhikode.js';
 
 var options1 = ["Choose Nearest place","ALAPPUZHA","ATTINGAL","ERNAKULAM","IDUKKI","KANNUR","KOTTAYAM","KOZHIKODE","MALAPURAM","MUVATTUPUZHA","PALAAKKAD","PATHANAMTHITTA","VADAKARA","WAYANAD"];
 var option2 = {};
