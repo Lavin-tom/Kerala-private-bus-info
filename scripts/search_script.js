@@ -96,7 +96,7 @@ function displayResults(results) {
 
 async function search() {
     try {
-
+        // Reset the noRouteMessage element
         document.getElementById('noRouteMessage').textContent = '';
 
         const dropdown1Value = document.getElementById("dropdown1").value;
@@ -122,7 +122,7 @@ async function search() {
         const searchResults = [];
 
         if (jsonData && jsonData.busSchedules && jsonData.busSchedules.length > 0) {
-            let routeFound = false;
+            let routeFound = false; 
 
             jsonData.busSchedules.forEach(schedule => {
                 const routeIndex2 = schedule.route.indexOf(dropdown2Value);
@@ -147,8 +147,9 @@ async function search() {
                     });
 
                     if (selectedTrips.length > 0) {
+
                         tableHead.style.display = 'table-header-group';
-                        routeFound = true; 
+                        routeFound = true; // Set the flag to true
 
                         selectedTrips.forEach(trip => {
                             const stations = trip.stations;
@@ -163,6 +164,7 @@ async function search() {
                             cell3.textContent = stations[stations.length - 1].station.trim();
                             cell4.textContent = stations[0].departureTime;
 
+
                             searchResults.push({
                                 vehicleNumber: schedule["Vehicle Number"],
                                 startStation: stations[0].station.trim(),
@@ -175,6 +177,7 @@ async function search() {
             });
 
             if (!routeFound) {
+
                 document.getElementById('noRouteMessage').textContent = 'No route found for the selected values.';
             }
         } else {
@@ -183,13 +186,12 @@ async function search() {
         }
 
         if (dropdown2Value === dropdown3Value) {
+
             document.getElementById('noRouteMessage').textContent = 'Please select different values for dropdown2 and dropdown3.';
         }
 
+
         console.log('Search Results:', searchResults);
-		const sortedResults = sortResultsByTime(searchResults);
-		console.log('Sorted Results:', sortedResults);
-		displayResults(sortedResults);		
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
         document.getElementById('noRouteMessage').textContent = 'Error fetching or parsing data. Please try again.';
