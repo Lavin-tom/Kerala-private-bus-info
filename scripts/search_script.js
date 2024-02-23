@@ -96,7 +96,6 @@ function displayResults(results) {
 
 async function search() {
     try {
-        // Reset the noRouteMessage element
         document.getElementById('noRouteMessage').textContent = '';
 
         const dropdown1Value = document.getElementById("dropdown1").value;
