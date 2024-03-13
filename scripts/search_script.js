@@ -75,8 +75,6 @@ function sortResultsByTime(results) {
     return sortedResults;
 }
 
-
-
 function displayResults(results) {
     const table = document.getElementById('resultTable');
     const tbody = table.getElementsByTagName('tbody')[0];
@@ -174,7 +172,6 @@ async function search() {
                     }
                 }
             });
-
             if (!routeFound) {
 
                 document.getElementById('noRouteMessage').textContent = 'No route found for the selected values.';
@@ -183,13 +180,10 @@ async function search() {
             console.error('Invalid data structure. Expected "busSchedules" property to exist.');
             document.getElementById('noRouteMessage').textContent = 'Invalid data structure. Please try again.';
         }
-
         if (dropdown2Value === dropdown3Value) {
 
             document.getElementById('noRouteMessage').textContent = 'Please select different values for dropdown2 and dropdown3.';
         }
-
-
         console.log('Search Results:', searchResults);
     } catch (error) {
         console.error('Error fetching or parsing JSON data:', error);
